@@ -692,6 +692,11 @@ function subscribeStudents() {
   }, (error) => {
     console.error("Firestore購読エラー:", error);
   });
+
+  const versionBox = document.getElementById("versionBox");
+if (versionBox) {
+  versionBox.textContent = "version v6";
+}
 }
 
 window.login = login;
