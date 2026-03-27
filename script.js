@@ -1,4 +1,4 @@
-import { db } from "./firebase.js";
+import { db } from "./firebase.js?v=6";
 
 import {
   collection,
@@ -715,3 +715,4 @@ window.showRecordDetail = showRecordDetail;
 subscribeStudents();
 renderStudentDetail();
 showScreen("loginScreen");
+alert("GitHub版 script.js 最新");
