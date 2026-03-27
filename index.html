@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>学びエイド 宿題管理システム</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>学びエイド 宿題管理システム</header>
+
+  <main class="screen-wrap">
+    <!-- ログイン画面 -->
+    <section id="loginScreen" class="screen">
+      <div class="panel auth-panel">
+        <h2>ログイン</h2>
+        <input type="text" id="loginId" placeholder="ID" />
+        <input type="password" id="loginPassword" placeholder="パスワード" />
+        <button onclick="login()">ログイン</button>
+      </div>
+    </section>
+
+    <!-- メニュー画面 -->
+   <section id="menuScreen" class="screen hidden">
+  <div class="panel menu-panel">
+    <h2>メニュー</h2>
+
+    <div id="currentUserInfo" class="info-text"></div>
+
+    <div id="menuButtons" class="menu-buttons"></div>
+
+    <div class="button-row">
+      <button class="sub-btn" onclick="logout()">ログアウト</button>
+    </div>
+  </div>
+</section>
+
+  <section id="managerDashboardScreen" class="screen hidden">
+  <div class="panel detail-panel">
+    <h2>教室長用データ一覧</h2>
+
+    <div id="managerDashboard"></div>
+
+    <div class="button-row">
+      <button class="sub-btn" onclick="showScreen('menuScreen')">メニューへ戻る</button>
+    </div>
+  </div>
+  </section>
+
+    <!-- 生徒登録画面 -->
+    <section id="registerScreen" class="screen hidden">
+      <div class="panel form-panel">
+        <h2>生徒登録</h2>
+
+        <input type="text" id="studentName" placeholder="生徒名" />
+
+        <select id="studentGrade">
+          <option value="">学年を選択</option>
+          <option value="中2">中2</option>
+          <option value="中3">中3</option>
+        </select>
+
+        <div class="button-row">
+          <button onclick="addStudent()">登録する</button>
+          <button class="sub-btn" onclick="showScreen('menuScreen')">メニューへ戻る</button>
+        </div>
+
+        <div id="registerMessage" class="info-text"></div>
+      </div>
+    </section>
+
+    <!-- 生徒選択画面 -->
+    <section id="selectScreen" class="screen hidden">
+      <div class="panel list-panel">
+        <h2>生徒選択</h2>
+
+        <div id="studentList"></div>
+
+        <div class="button-row">
+          <button class="sub-btn" onclick="showScreen('menuScreen')">メニューへ戻る</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 生徒詳細画面 -->
+    <section id="detailScreen" class="screen hidden">
+      <div class="panel detail-panel">
+        <h2>生徒詳細</h2>
+        <div id="studentDetail">
+          <div class="empty">生徒を選択してね。</div>
+        </div>
+
+        <div class="button-row">
+          <button class="sub-btn" onclick="openSelectScreen()">生徒選択へ戻る</button>
+          <button class="sub-btn" onclick="showScreen('menuScreen')">メニューへ戻る</button>
+        </div>
+      </div>
+    </section>
+
+    </main>
+
+  <script src="grade-chu1.js"></script>
+  <script src="grade-chu2.js"></script>
+  <script src="grade-chu3.js"></script>
+  <script src="grade-kou1.js"></script>
+  <script src="grade-kou2.js"></script>
+  <script src="grade-kou3.js"></script>
+  <script src="admin.js"></script>
+  <script src="script.js"></script>
+
+</body>
+</html>

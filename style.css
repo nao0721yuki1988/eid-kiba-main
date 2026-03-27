@@ -1,0 +1,198 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background: #f4f6f8;
+  color: #333;
+}
+
+header {
+  background: #2c3e50;
+  color: white;
+  padding: 16px 20px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.screen-wrap {
+  padding: 24px;
+}
+
+.screen {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hidden {
+  display: none;
+}
+
+.panel {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+
+input, select, textarea, button {
+  box-sizing: border-box;
+  padding: 10px;
+  margin: 8px 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+input, select, textarea {
+  width: 100%;
+  max-width: 420px;
+}
+
+button {
+  background: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  width: auto;
+  padding: 10px 16px;
+}
+
+button:hover {
+  background: #2980b9;
+}
+
+.sub-btn {
+  background: #7f8c8d;
+}
+
+.sub-btn:hover {
+  background: #6c7a7b;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.student-item {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  background: #fafafa;
+}
+
+.student-item.active {
+  border: 2px solid #3498db;
+  background: #eaf4ff;
+}
+
+.student-name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.student-grade {
+  color: #666;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.top-info {
+  background: #f8fbff;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.empty {
+  color: #777;
+  padding: 12px 0;
+}
+
+.info-text {
+  margin-top: 8px;
+  color: #2c3e50;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+th, td {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 8px;
+  text-align: left;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+th {
+  background: #f0f3f6;
+}
+
+.checkbox-cell {
+  text-align: center;
+}
+
+.memo-small {
+  color: #555;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.delete-btn {
+  background: #e74c3c;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
+}
+
+.unit-checklist {
+  margin: 12px 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.unit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+.unit-item input[type="checkbox"] {
+  margin-top: 2px;
+  transform: scale(1.2);
+}
+
+.unit-item span {
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .unit-item {
+    padding: 14px;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  .button-row {
+    flex-direction: column;
+  }
+}
