@@ -9,14 +9,19 @@ import {
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+console.log("hsMathCourses", typeof hsMathCourses !== "undefined" ? hsMathCourses : "未読込");
+
 const unitsByGrade = {
   中1: typeof unitsChu1 !== "undefined" ? unitsChu1 : {},
   中2: typeof unitsChu2 !== "undefined" ? unitsChu2 : {},
   中3: typeof unitsChu3 !== "undefined" ? unitsChu3 : {},
-  高1: typeof unitsKou1 !== "undefined" ? unitsKou1 : {},
-  高2: typeof unitsKou2 !== "undefined" ? unitsKou2 : {},
-  高3: typeof unitsKou3 !== "undefined" ? unitsKou3 : {}
 };
+
+const hsSubjects = {
+  数学: typeof hsMathCourses !== "undefined" ? hsMathCourses : {}
+};
+
+window.hsMathCourses = hsMathCourses;
 
 const users = [
   { id: "n_miwa", password: "0001", role: "manager", name: "三輪" },
