@@ -258,6 +258,14 @@ function renderStudentDetail() {
       <option value="">分野を選択</option>
     </select>
 
+        <select id="recordCourse">
+     <option value="">講座を選択</option>
+    </select>
+
+    <select id="recordSection">
+     <option value="">節を選択</option>
+    </select>
+
     <div id="unitChecklist" class="unit-checklist">
       <div class="empty">教科を選ぶと単元が表示されるよ。</div>
     </div>
@@ -732,3 +740,75 @@ console.log("add.js 読み込み成功");
 subscribeStudents();
 renderStudentDetail();
 showScreen("loginScreen");
+
+document.addEventListener("DOMContentLoaded", function () {
+  const subjectSelect = document.getElementById("recordSubject");
+  const courseSelect = document.getElementById("recordCourse");
+  const sectionSelect = document.getElementById("recordSection");
+  const unitContainer = document.getElementById("unitChecklist");
+
+  if (!subjectSelect || !courseSelect || !sectionSelect || !unitContainer) {
+    console.log("高校用入力欄はまだ表示されていない");
+    return;
+  }
+
+  subjectSelect.innerHTML = `
+    <option value="">選択してください</option>
+    <option value="数学">数学</option>
+  `;
+
+  subjectSelect.addEventListener("change", () => {
+    const subject = subjectSelect.value;
+    courseSelect.innerHTML = `<option value="">講座を選択</option>`;
+    sectionSelect.innerHTML = `<option value="">節を選択</option>`;
+    unitContainer.innerHTML = "";
+
+    if (subject === "数学") {
+      Object.keys(hsMathCourses).forEach(course => {
+        const option = document.createElement("option");
+        option.value = course;
+        option.textContent = course;
+        courseSelect.appendChild(option);
+      });
+    }
+  });
+
+  courseSelect.addEventListener("change", () => {
+    const course = courseSelect.value;
+    sectionSelect.innerHTML = `<option value="">節を選択</option>`;
+    unitContainer.innerHTML = "";
+
+    if (!course || !hsMathCourses[course]) return;
+
+    Object.keys(hsMathCourses[course]).forEach(section => {
+      const option = document.createElement("option");
+      option.value = section;
+      option.textContent = section;
+      sectionSelect.appendChild(option);
+    });
+  });
+
+  sectionSelect.addEventListener("change", () => {
+    const course = courseSelect.value;
+    const section = sectionSelect.value;
+    unitContainer.innerHTML = "";
+
+    if (!course || !section || !hsMathCourses[course]?.[section]) return;
+
+    hsMathCourses[course][section].forEach(unit => {
+      const label = document.createElement("label");
+      label.className = "unit-item";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "unit-checkbox";
+      checkbox.value = unit;
+
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(unit));
+
+      unitContainer.appendChild(label);
+      unitContainer.appendChild(document.createElement("br"));
+    });
+  });
+});
