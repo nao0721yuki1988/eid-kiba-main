@@ -3,7 +3,6 @@ import { db } from "./firebase-config.js?v=1";
 import {
   collection,
   addDoc,
-  getDocs,
   onSnapshot,
   doc,
   updateDoc,
@@ -19,10 +18,6 @@ const unitsByGrade = {
   高3: typeof unitsKou3 !== "undefined" ? unitsKou3 : {}
 };
 
-let students = [];
-let selectedStudentId = null;
-let currentUser = null;
-
 const users = [
   { id: "n_miwa", password: "0001", role: "manager", name: "三輪" },
   { id: "minami_m", password: "0130", role: "manager", name: "松村先生" },
@@ -32,6 +27,10 @@ const users = [
   { id: "soushi_s", password: "0131", role: "teacher", name: "酒井先生" },
   { id: "hina_o", password: "0132", role: "teacher", name: "小田口先生" }
 ];
+
+let students = [];
+let selectedStudentId = null;
+let currentUser = null;
 
 function generateId() {
   return Date.now().toString() + Math.floor(Math.random() * 1000);
@@ -48,26 +47,32 @@ function escapeHtml(text) {
 
 function showScreen(screenId) {
   if (screenId === "registerScreen" && (!currentUser || currentUser.role !== "manager")) {
-    alert("生徒登録は教室長のみ使えます。");
+    alert("生徒登録は三輪先生のみ使えます。");
     return;
   }
 
-  document.getElementById("loginScreen").classList.add("hidden");
-  document.getElementById("menuScreen").classList.add("hidden");
-  document.getElementById("registerScreen").classList.add("hidden");
-  document.getElementById("selectScreen").classList.add("hidden");
-  document.getElementById("detailScreen").classList.add("hidden");
+  const screens = [
+    "loginScreen",
+    "menuScreen",
+    "managerDashboardScreen",
+    "registerScreen",
+    "selectScreen",
+    "detailScreen"
+  ];
 
-  const managerDashboardScreen = document.getElementById("managerDashboardScreen");
-  if (managerDashboardScreen) {
-    managerDashboardScreen.classList.add("hidden");
-  }
+  screens.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("hidden");
+  });
 
   if (screenId === "menuScreen" || screenId === "loginScreen") {
     clearScreenData();
   }
 
-  document.getElementById(screenId).classList.remove("hidden");
+  const target = document.getElementById(screenId);
+  if (target) {
+    target.classList.remove("hidden");
+  }
 }
 
 function login() {
@@ -103,7 +108,7 @@ function logout() {
 
 async function addStudent() {
   if (!currentUser || currentUser.role !== "manager") {
-    alert("生徒登録は教室長のみ使えます。");
+    alert("生徒登録は三輪先生のみ使えます。");
     return;
   }
 
@@ -125,7 +130,8 @@ async function addStudent() {
     document.getElementById("studentName").value = "";
     document.getElementById("studentGrade").value = "";
 
-    document.getElementById("registerMessage").textContent = "登録したよ。";
+    const msg = document.getElementById("registerMessage");
+    if (msg) msg.textContent = "登録したよ。";
   } catch (error) {
     console.error("生徒登録エラー:", error);
     alert("生徒登録に失敗したよ。");
@@ -288,7 +294,8 @@ function renderStudentDetail() {
   `;
 
   const today = new Date().toISOString().split("T")[0];
-  document.getElementById("recordDate").value = today;
+  const recordDate = document.getElementById("recordDate");
+  if (recordDate) recordDate.value = today;
 }
 
 function updateUnitOptions() {
@@ -455,6 +462,32 @@ async function deleteRecord(studentId, recordId) {
   }
 }
 
+async function deleteStudent(studentId, event) {
+  if (event) event.stopPropagation();
+
+  if (!currentUser || currentUser.role !== "manager") {
+    alert("生徒削除は三輪先生のみ使えます。");
+    return;
+  }
+
+  const student = students.find(s => s.id === studentId);
+  if (!student) return;
+
+  const ok = confirm(`「${student.name}」を削除していい？\n宿題記録も全部消えるよ。`);
+  if (!ok) return;
+
+  try {
+    await deleteDoc(doc(db, "students", studentId));
+
+    if (selectedStudentId === studentId) {
+      selectedStudentId = null;
+    }
+  } catch (error) {
+    console.error("生徒削除エラー:", error);
+    alert("削除に失敗したよ。");
+  }
+}
+
 function openSelectScreen() {
   if (!currentUser) {
     alert("先にログインしてね。");
@@ -507,7 +540,7 @@ function renderMenu() {
       <button onclick="showScreen('registerScreen')">生徒登録</button>
       <button onclick="openSelectScreen()">生徒選択</button>
       <button onclick="openManagerRequestScreen()">申し込み状況</button>
-      <button onclick="openManagerDashboard()">教室長用データ一覧</button>
+      <button onclick="openManagerDashboard()">三輪用データ一覧</button>
     `;
   } else {
     menuButtons.innerHTML = `
@@ -518,7 +551,7 @@ function renderMenu() {
 
 function openManagerRequestScreen() {
   if (!currentUser || currentUser.role !== "manager") {
-    alert("この画面は教室長のみ使えます。");
+    alert("この画面は三輪先生のみ使えます。");
     return;
   }
 
@@ -527,7 +560,7 @@ function openManagerRequestScreen() {
 
 function openManagerDashboard() {
   if (!currentUser || currentUser.role !== "manager") {
-    alert("この画面は教室長のみ使えます。");
+    alert("この画面は三輪先生のみ使えます。");
     return;
   }
 
@@ -648,55 +681,28 @@ function clearScreenData() {
   if (managerDashboard) managerDashboard.innerHTML = "";
 }
 
-async function deleteStudent(studentId, event) {
-  if (event) event.stopPropagation();
-
-  if (!currentUser || currentUser.role !== "manager") {
-    alert("生徒削除は教室長のみ使えます。");
-    return;
-  }
-
-  const student = students.find(s => s.id === studentId);
-  if (!student) return;
-
-  const ok = confirm(`「${student.name}」を削除していい？\n宿題記録も全部消えるよ。`);
-  if (!ok) return;
-
-  try {
-    await deleteDoc(doc(db, "students", studentId));
-
-    if (selectedStudentId === studentId) {
-      selectedStudentId = null;
-    }
-  } catch (error) {
-    console.error("生徒削除エラー:", error);
-    alert("削除に失敗したよ。");
-  }
-}
-
 function subscribeStudents() {
-  onSnapshot(collection(db, "students"), (snapshot) => {
-    students = snapshot.docs.map(docSnap => ({
-      id: docSnap.id,
-      homeworkRecords: [],
-      ...docSnap.data()
-    }));
+  onSnapshot(
+    collection(db, "students"),
+    (snapshot) => {
+      students = snapshot.docs.map(docSnap => ({
+        id: docSnap.id,
+        homeworkRecords: [],
+        ...docSnap.data()
+      }));
 
-    renderStudentList();
-    renderStudentDetail();
+      renderStudentList();
+      renderStudentDetail();
 
-    const managerDashboardScreen = document.getElementById("managerDashboardScreen");
-    if (managerDashboardScreen && !managerDashboardScreen.classList.contains("hidden")) {
-      renderManagerDashboard();
+      const managerDashboardScreen = document.getElementById("managerDashboardScreen");
+      if (managerDashboardScreen && !managerDashboardScreen.classList.contains("hidden")) {
+        renderManagerDashboard();
+      }
+    },
+    (error) => {
+      console.error("Firestore購読エラー:", error);
     }
-  }, (error) => {
-    console.error("Firestore購読エラー:", error);
-  });
-
-  const versionBox = document.getElementById("versionBox");
-if (versionBox) {
-  versionBox.textContent = "version v6";
-}
+  );
 }
 
 window.login = login;
@@ -717,7 +723,7 @@ window.updateUnitOptions = updateUnitOptions;
 window.updateSelectedCount = updateSelectedCount;
 window.showRecordDetail = showRecordDetail;
 
+console.log("add.js 読み込み成功");
 subscribeStudents();
 renderStudentDetail();
 showScreen("loginScreen");
-alert("GitHub版 script.js 最新");
