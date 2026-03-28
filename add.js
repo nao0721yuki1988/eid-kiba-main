@@ -258,13 +258,22 @@ function renderStudentDetail() {
       <option value="">分野を選択</option>
     </select>
 
-        <select id="recordCourse">
-     <option value="">講座を選択</option>
-    </select>
+    <select id="recordSubject">
+  <option value="">教科を選択</option>
+  <option value="数学">数学</option>
+</select>
 
-    <select id="recordSection">
-     <option value="">節を選択</option>
-    </select>
+<select id="recordCourse">
+  <option value="">講座を選択</option>
+</select>
+
+<select id="recordSection">
+  <option value="">節を選択</option>
+</select>
+
+<div id="unitChecklist" class="unit-checklist">
+  <div class="empty">教科を選ぶと単元が表示されるよ。</div>
+</div>
 
     <div id="unitChecklist" class="unit-checklist">
       <div class="empty">教科を選ぶと単元が表示されるよ。</div>
@@ -312,9 +321,26 @@ function renderStudentDetail() {
 }
 
 function updateUnitOptions() {
-  const student = students.find(s => s.id === selectedStudentId);
-  const subject = document.getElementById("recordSubject")?.value;
+
+  const subject = document.getElementById("recordSubject").value;
+
+  // 👇ここに追加（←これがさっきのやつ）
   const categorySelect = document.getElementById("recordCategory");
+
+  if (subject === "数学") {
+    if (categorySelect) categorySelect.style.display = "none";
+  } else {
+    if (categorySelect) categorySelect.style.display = "block";
+  }
+
+  // 👇さらにこの分岐も入れる（重要）
+  if (subject === "数学" && typeof hsMathCourses !== "undefined") {
+    return;
+  }
+
+  // ↓↓↓ここから下は元の処理そのまま
+
+  const student = students.find(s => s.id === selectedStudentId);
   const category = categorySelect ? categorySelect.value : "";
 
   const checklist = document.getElementById("unitChecklist");
@@ -741,27 +767,22 @@ subscribeStudents();
 renderStudentDetail();
 showScreen("loginScreen");
 
-document.addEventListener("DOMContentLoaded", function () {
-  const subjectSelect = document.getElementById("recordSubject");
-  const courseSelect = document.getElementById("recordCourse");
-  const sectionSelect = document.getElementById("recordSection");
-  const unitContainer = document.getElementById("unitChecklist");
+document.addEventListener("change", function (event) {
+  const target = event.target;
 
-  if (!subjectSelect || !courseSelect || !sectionSelect || !unitContainer) {
-    console.log("高校用入力欄はまだ表示されていない");
-    return;
-  }
+  if (target.id === "recordSubject") {
+    const subjectSelect = document.getElementById("recordSubject");
+    const courseSelect = document.getElementById("recordCourse");
+    const sectionSelect = document.getElementById("recordSection");
+    const unitContainer = document.getElementById("unitChecklist");
 
-  subjectSelect.innerHTML = `
-    <option value="">選択してください</option>
-    <option value="数学">数学</option>
-  `;
+    if (!subjectSelect || !courseSelect || !sectionSelect || !unitContainer) return;
 
-  subjectSelect.addEventListener("change", () => {
     const subject = subjectSelect.value;
+
     courseSelect.innerHTML = `<option value="">講座を選択</option>`;
     sectionSelect.innerHTML = `<option value="">節を選択</option>`;
-    unitContainer.innerHTML = "";
+    unitContainer.innerHTML = `<div class="empty">講座を選んでね。</div>`;
 
     if (subject === "数学") {
       Object.keys(hsMathCourses).forEach(course => {
@@ -770,13 +791,22 @@ document.addEventListener("DOMContentLoaded", function () {
         option.textContent = course;
         courseSelect.appendChild(option);
       });
+    } else {
+      unitContainer.innerHTML = `<div class="empty">教科を選ぶと単元が表示されるよ。</div>`;
     }
-  });
+  }
 
-  courseSelect.addEventListener("change", () => {
+  if (target.id === "recordCourse") {
+    const courseSelect = document.getElementById("recordCourse");
+    const sectionSelect = document.getElementById("recordSection");
+    const unitContainer = document.getElementById("unitChecklist");
+
+    if (!courseSelect || !sectionSelect || !unitContainer) return;
+
     const course = courseSelect.value;
+
     sectionSelect.innerHTML = `<option value="">節を選択</option>`;
-    unitContainer.innerHTML = "";
+    unitContainer.innerHTML = `<div class="empty">節を選んでね。</div>`;
 
     if (!course || !hsMathCourses[course]) return;
 
@@ -786,14 +816,24 @@ document.addEventListener("DOMContentLoaded", function () {
       option.textContent = section;
       sectionSelect.appendChild(option);
     });
-  });
+  }
 
-  sectionSelect.addEventListener("change", () => {
+  if (target.id === "recordSection") {
+    const courseSelect = document.getElementById("recordCourse");
+    const sectionSelect = document.getElementById("recordSection");
+    const unitContainer = document.getElementById("unitChecklist");
+
+    if (!courseSelect || !sectionSelect || !unitContainer) return;
+
     const course = courseSelect.value;
     const section = sectionSelect.value;
+
     unitContainer.innerHTML = "";
 
-    if (!course || !section || !hsMathCourses[course]?.[section]) return;
+    if (!course || !section || !hsMathCourses[course] || !hsMathCourses[course][section]) {
+      unitContainer.innerHTML = `<div class="empty">単元がありません。</div>`;
+      return;
+    }
 
     hsMathCourses[course][section].forEach(unit => {
       const label = document.createElement("label");
@@ -803,6 +843,7 @@ document.addEventListener("DOMContentLoaded", function () {
       checkbox.type = "checkbox";
       checkbox.className = "unit-checkbox";
       checkbox.value = unit;
+      checkbox.onchange = updateSelectedCount;
 
       label.appendChild(checkbox);
       label.appendChild(document.createTextNode(unit));
@@ -810,5 +851,7 @@ document.addEventListener("DOMContentLoaded", function () {
       unitContainer.appendChild(label);
       unitContainer.appendChild(document.createElement("br"));
     });
-  });
+
+    updateSelectedCount();
+  }
 });
