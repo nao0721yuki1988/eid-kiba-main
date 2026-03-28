@@ -246,25 +246,24 @@ function renderStudentDetail() {
     <input type="date" id="recordDate" />
 
     <select id="recordSubject" onchange="updateUnitOptions()">
-      <option value="">教科を選択</option>
-      <option value="国語">国語</option>
-      <option value="数学">数学</option>
-      <option value="英語">英語</option>
-      <option value="理科">理科</option>
-      <option value="社会">社会</option>
-    </select>
-
-    <select id="recordCategory" onchange="updateUnitOptions()">
-      <option value="">分野を選択</option>
-    </select>
-
-    <select id="recordSubject">
   <option value="">教科を選択</option>
+  <option value="国語">国語</option>
   <option value="数学">数学</option>
+  <option value="英語">英語</option>
+  <option value="理科">理科</option>
+  <option value="社会">社会</option>
+</select>
+
+<select id="recordCategory" onchange="updateUnitOptions()">
+  <option value="">分野を選択</option>
 </select>
 
 <select id="recordCourse">
   <option value="">講座を選択</option>
+</select>
+
+<select id="recordChapter">
+  <option value="">章を選択</option>
 </select>
 
 <select id="recordSection">
@@ -321,10 +320,7 @@ function renderStudentDetail() {
 }
 
 function updateUnitOptions() {
-
   const subject = document.getElementById("recordSubject").value;
-
-  // 👇ここに追加（←これがさっきのやつ）
   const categorySelect = document.getElementById("recordCategory");
 
   if (subject === "数学") {
@@ -333,18 +329,17 @@ function updateUnitOptions() {
     if (categorySelect) categorySelect.style.display = "block";
   }
 
-  // 👇さらにこの分岐も入れる（重要）
   if (subject === "数学" && typeof hsMathCourses !== "undefined") {
     return;
   }
-
-  // ↓↓↓ここから下は元の処理そのまま
 
   const student = students.find(s => s.id === selectedStudentId);
   const category = categorySelect ? categorySelect.value : "";
 
   const checklist = document.getElementById("unitChecklist");
   const selectedCount = document.getElementById("selectedCount");
+
+  // この下は元の中学生処理そのまま
 
   if (!checklist || !selectedCount) return;
 
@@ -770,17 +765,20 @@ showScreen("loginScreen");
 document.addEventListener("change", function (event) {
   const target = event.target;
 
+  // 教科 → 講座
   if (target.id === "recordSubject") {
     const subjectSelect = document.getElementById("recordSubject");
     const courseSelect = document.getElementById("recordCourse");
+    const chapterSelect = document.getElementById("recordChapter");
     const sectionSelect = document.getElementById("recordSection");
     const unitContainer = document.getElementById("unitChecklist");
 
-    if (!subjectSelect || !courseSelect || !sectionSelect || !unitContainer) return;
+    if (!subjectSelect || !courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
 
     const subject = subjectSelect.value;
 
     courseSelect.innerHTML = `<option value="">講座を選択</option>`;
+    chapterSelect.innerHTML = `<option value="">章を選択</option>`;
     sectionSelect.innerHTML = `<option value="">節を選択</option>`;
     unitContainer.innerHTML = `<div class="empty">講座を選んでね。</div>`;
 
@@ -791,26 +789,52 @@ document.addEventListener("change", function (event) {
         option.textContent = course;
         courseSelect.appendChild(option);
       });
-    } else {
-      unitContainer.innerHTML = `<div class="empty">教科を選ぶと単元が表示されるよ。</div>`;
     }
   }
 
+  // 講座 → 章
   if (target.id === "recordCourse") {
     const courseSelect = document.getElementById("recordCourse");
+    const chapterSelect = document.getElementById("recordChapter");
     const sectionSelect = document.getElementById("recordSection");
     const unitContainer = document.getElementById("unitChecklist");
 
-    if (!courseSelect || !sectionSelect || !unitContainer) return;
+    if (!courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
 
     const course = courseSelect.value;
+
+    chapterSelect.innerHTML = `<option value="">章を選択</option>`;
+    sectionSelect.innerHTML = `<option value="">節を選択</option>`;
+    unitContainer.innerHTML = `<div class="empty">章を選んでね。</div>`;
+
+    if (!course || !hsMathCourses[course]) return;
+
+    Object.keys(hsMathCourses[course]).forEach(chapter => {
+      const option = document.createElement("option");
+      option.value = chapter;
+      option.textContent = chapter;
+      chapterSelect.appendChild(option);
+    });
+  }
+
+  // 章 → 節
+  if (target.id === "recordChapter") {
+    const courseSelect = document.getElementById("recordCourse");
+    const chapterSelect = document.getElementById("recordChapter");
+    const sectionSelect = document.getElementById("recordSection");
+    const unitContainer = document.getElementById("unitChecklist");
+
+    if (!courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
+
+    const course = courseSelect.value;
+    const chapter = chapterSelect.value;
 
     sectionSelect.innerHTML = `<option value="">節を選択</option>`;
     unitContainer.innerHTML = `<div class="empty">節を選んでね。</div>`;
 
-    if (!course || !hsMathCourses[course]) return;
+    if (!course || !chapter || !hsMathCourses[course]?.[chapter]) return;
 
-    Object.keys(hsMathCourses[course]).forEach(section => {
+    Object.keys(hsMathCourses[course][chapter]).forEach(section => {
       const option = document.createElement("option");
       option.value = section;
       option.textContent = section;
@@ -818,24 +842,29 @@ document.addEventListener("change", function (event) {
     });
   }
 
+  // 節 → 単元
   if (target.id === "recordSection") {
     const courseSelect = document.getElementById("recordCourse");
+    const chapterSelect = document.getElementById("recordChapter");
     const sectionSelect = document.getElementById("recordSection");
     const unitContainer = document.getElementById("unitChecklist");
 
-    if (!courseSelect || !sectionSelect || !unitContainer) return;
+    if (!courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
 
     const course = courseSelect.value;
+    const chapter = chapterSelect.value;
     const section = sectionSelect.value;
 
     unitContainer.innerHTML = "";
 
-    if (!course || !section || !hsMathCourses[course] || !hsMathCourses[course][section]) {
+    const units = hsMathCourses[course]?.[chapter]?.[section];
+
+    if (!units || !Array.isArray(units)) {
       unitContainer.innerHTML = `<div class="empty">単元がありません。</div>`;
       return;
     }
 
-    hsMathCourses[course][section].forEach(unit => {
+    units.forEach(unit => {
       const label = document.createElement("label");
       label.className = "unit-item";
 
