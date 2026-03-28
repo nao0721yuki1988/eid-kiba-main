@@ -1,4 +1,4 @@
-import { db } from "./firebase.js?v=5";
+import { db } from "./firebase-config.js?v=1";
 
 import {
   collection,
