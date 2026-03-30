@@ -387,12 +387,13 @@ function updateUnitOptions() {
     categorySelect.innerHTML = '<option value="">分野を選択</option>';
   }
 
-  // 中学生のとき
+  // 中学生
   if (student.grade.includes("中")) {
     if (categorySelect) categorySelect.style.display = "block";
 
     if (subject === "理科") {
-      categorySelect.innerHTML += `
+      categorySelect.innerHTML = `
+        <option value="">分野を選択</option>
         <option value="生物">生物</option>
         <option value="化学">化学</option>
         <option value="物理">物理</option>
@@ -403,7 +404,8 @@ function updateUnitOptions() {
     }
 
     if (subject === "社会") {
-      categorySelect.innerHTML += `
+      categorySelect.innerHTML = `
+        <option value="">分野を選択</option>
         <option value="地理">地理</option>
         <option value="歴史">歴史</option>
         <option value="公民">公民</option>
@@ -413,16 +415,19 @@ function updateUnitOptions() {
     }
   }
 
-  // 高校数学のとき
+  // 高校数学
   if (subject === "数学" && typeof hsMathCourses !== "undefined" && !student.grade.includes("中")) {
     if (categorySelect) categorySelect.style.display = "none";
     return;
   }
 
-  // それ以外の中学教科用
+  // それ以外の中学教科
   if (categorySelect) categorySelect.style.display = "block";
 
   const category = categorySelect ? categorySelect.value : "";
+
+  // ここから下は元の中学処理を続ける
+
 
   if (!checklist || !selectedCount) return;
 
