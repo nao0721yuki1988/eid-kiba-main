@@ -235,6 +235,7 @@ function renderStudentDetail() {
         </td>
       </tr>
     `).join("");
+  
   detail.innerHTML = `
   <div class="top-info">
     <strong>名前：</strong>${escapeHtml(student.name)}<br>
@@ -259,30 +260,27 @@ function renderStudentDetail() {
       <input type="date" id="recordEndDate" />
     </div>
 
-    <select id="recordSubject" onchange="updateUnitOptions()">
-      <option value="">教科を選択</option>
-      <option value="国語">国語</option>
-      <option value="数学">数学</option>
-      <option value="英語">英語</option>
-      <option value="理科">理科</option>
-      <option value="社会">社会</option>
-    </select>
+    <!-- 中学生用 -->
+<div id="juniorFields">
+  <select id="recordCategory" onchange="updateUnitOptions()">
+    <option value="">分野を選択</option>
+  </select>
+</div>
 
-    <select id="recordCategory" onchange="updateUnitOptions()">
-      <option value="">分野を選択</option>
-    </select>
+<!-- 高校生用 -->
+<div id="highFields">
+  <select id="recordCourse">
+    <option value="">講座を選択</option>
+  </select>
 
-    <select id="recordCourse">
-      <option value="">講座を選択</option>
-    </select>
+  <select id="recordChapter">
+    <option value="">章を選択</option>
+  </select>
 
-    <select id="recordChapter">
-      <option value="">章を選択</option>
-    </select>
-
-    <select id="recordSection">
-      <option value="">節を選択</option>
-    </select>
+  <select id="recordSection">
+    <option value="">節を選択</option>
+  </select>
+</div>
 
     <div id="unitChecklist" class="unit-checklist">
       <div class="empty">教科を選ぶと単元が表示されるよ。</div>
@@ -348,6 +346,17 @@ if (toggleTaskFormBtn && taskFormArea) {
       ? "宿題を追加"
       : "宿題入力を閉じる";
   });
+
+const juniorFields = document.getElementById("juniorFields");
+const highFields = document.getElementById("highFields");
+
+if (student.grade.includes("中")) {
+  if (juniorFields) juniorFields.style.display = "block";
+  if (highFields) highFields.style.display = "none";
+} else {
+  if (juniorFields) juniorFields.style.display = "none";
+  if (highFields) highFields.style.display = "block";
+}
 }
 
 renderStudentCalendar();
