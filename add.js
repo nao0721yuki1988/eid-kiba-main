@@ -283,17 +283,17 @@ function renderStudentDetail() {
     <option value="">講座を選択</option>
   </select>
 
-  <select id="recordChapter">
+  <select id="recordChapter" onchange="updateUnitOptions('chapter')">
     <option value="">章を選択</option>
   </select>
 
-  <select id="recordSection">
+  <select id="recordSection" onchange="updateUnitOptions('section')">
     <option value="">節を選択</option>
   </select>
 </div>
 
     <div id="unitChecklist" class="unit-checklist">
-      <div class="empty">教科を選ぶと単元が表示されるよ。</div>
+      <div class="empty">教科を選んでね。</div>
     </div>
 
     <div id="selectedCount" class="info-text"></div>
