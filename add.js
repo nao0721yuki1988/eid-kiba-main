@@ -18,7 +18,8 @@ const unitsByGrade = {
 };
 
 const hsSubjects = {
-  数学: typeof hsMathCourses !== "undefined" ? hsMathCourses : {}
+  数学: typeof hsMathCourses !== "undefined" ? hsMathCourses : {},
+  英語: typeof hsEnglishCourses !== "undefined" ? hsEnglishCourses : {}
 };
 
 window.hsMathCourses = hsMathCourses;
@@ -925,101 +926,148 @@ document.addEventListener("change", function (event) {
     }
   }
 
-  // 講座 → 章
-  if (target.id === "recordCourse") {
-    const courseSelect = document.getElementById("recordCourse");
-    const chapterSelect = document.getElementById("recordChapter");
-    const sectionSelect = document.getElementById("recordSection");
-    const unitContainer = document.getElementById("unitChecklist");
+ if (target.id === "recordSubject") {
+  const student = students.find(s => s.id === selectedStudentId);
+  const subjectSelect = document.getElementById("recordSubject");
+  const courseSelect = document.getElementById("recordCourse");
+  const chapterSelect = document.getElementById("recordChapter");
+  const sectionSelect = document.getElementById("recordSection");
+  const unitContainer = document.getElementById("unitChecklist");
 
-    if (!courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
+  if (!student || !subjectSelect || !courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
 
-    const course = courseSelect.value;
+  const subject = subjectSelect.value;
 
-    chapterSelect.innerHTML = `<option value="">章を選択</option>`;
-    sectionSelect.innerHTML = `<option value="">節を選択</option>`;
-    unitContainer.innerHTML = `<div class="empty">章を選んでね。</div>`;
+  courseSelect.innerHTML = `<option value="">講座を選択</option>`;
+  chapterSelect.innerHTML = `<option value="">章を選択</option>`;
+  sectionSelect.innerHTML = `<option value="">節を選択</option>`;
+  unitContainer.innerHTML = `<div class="empty">教科を選ぶと単元が表示されるよ。</div>`;
 
-    if (!course || !hsMathCourses[course]) return;
+  // 高校生のとき
+  if (!student.grade.includes("中")) {
+    const subjectCourses = hsSubjects[subject] || {};
 
-    Object.keys(hsMathCourses[course]).forEach(chapter => {
-      const option = document.createElement("option");
-      option.value = chapter;
-      option.textContent = chapter;
-      chapterSelect.appendChild(option);
-    });
-  }
-
-  // 章 → 節
-  if (target.id === "recordChapter") {
-    const courseSelect = document.getElementById("recordCourse");
-    const chapterSelect = document.getElementById("recordChapter");
-    const sectionSelect = document.getElementById("recordSection");
-    const unitContainer = document.getElementById("unitChecklist");
-
-    if (!courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
-
-    const course = courseSelect.value;
-    const chapter = chapterSelect.value;
-
-    sectionSelect.innerHTML = `<option value="">節を選択</option>`;
-    unitContainer.innerHTML = `<div class="empty">節を選んでね。</div>`;
-
-    if (!course || !chapter || !hsMathCourses[course]?.[chapter]) return;
-
-    Object.keys(hsMathCourses[course][chapter]).forEach(section => {
-      const option = document.createElement("option");
-      option.value = section;
-      option.textContent = section;
-      sectionSelect.appendChild(option);
-    });
-  }
-
-  // 節 → 単元
-  if (target.id === "recordSection") {
-    const courseSelect = document.getElementById("recordCourse");
-    const chapterSelect = document.getElementById("recordChapter");
-    const sectionSelect = document.getElementById("recordSection");
-    const unitContainer = document.getElementById("unitChecklist");
-
-    if (!courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
-
-    const course = courseSelect.value;
-    const chapter = chapterSelect.value;
-    const section = sectionSelect.value;
-
-    unitContainer.innerHTML = "";
-
-    const units = hsMathCourses[course]?.[chapter]?.[section];
-
-    if (!units || !Array.isArray(units)) {
-      unitContainer.innerHTML = `<div class="empty">単元がありません。</div>`;
+    if (Object.keys(subjectCourses).length === 0) {
+      unitContainer.innerHTML = `<div class="empty">この教科の講座データはまだありません。</div>`;
       return;
     }
 
-    units.forEach(unit => {
-      const label = document.createElement("label");
-      label.className = "unit-item";
-
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.className = "unit-checkbox";
-      checkbox.value = unit;
-      checkbox.onchange = updateSelectedCount;
-
-      label.appendChild(checkbox);
-      label.appendChild(document.createTextNode(unit));
-
-      unitContainer.appendChild(label);
-      unitContainer.appendChild(document.createElement("br"));
+    Object.keys(subjectCourses).forEach(course => {
+      const option = document.createElement("option");
+      option.value = course;
+      option.textContent = course;
+      courseSelect.appendChild(option);
     });
 
-    updateSelectedCount();
+    unitContainer.innerHTML = `<div class="empty">講座を選んでね。</div>`;
+    return;
   }
-});
+}
 
-document.addEventListener("change", function (event) {
-  if (event.target.id === "calendarMonth") {
-    renderStudentCalendar();
+  if (target.id === "recordCourse") {
+  const student = students.find(s => s.id === selectedStudentId);
+  const subject = document.getElementById("recordSubject").value;
+  const courseSelect = document.getElementById("recordCourse");
+  const chapterSelect = document.getElementById("recordChapter");
+  const sectionSelect = document.getElementById("recordSection");
+  const unitContainer = document.getElementById("unitChecklist");
+
+  if (!student || !courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
+
+  const course = courseSelect.value;
+
+  chapterSelect.innerHTML = `<option value="">章を選択</option>`;
+  sectionSelect.innerHTML = `<option value="">節を選択</option>`;
+  unitContainer.innerHTML = `<div class="empty">章を選んでね。</div>`;
+
+  // 高校生だけ動かす
+  if (student.grade.includes("中")) return;
+
+  const subjectCourses = hsSubjects[subject] || {};
+  if (!course || !subjectCourses[course]) return;
+
+  Object.keys(subjectCourses[course]).forEach(chapter => {
+    const option = document.createElement("option");
+    option.value = chapter;
+    option.textContent = chapter;
+    chapterSelect.appendChild(option);
+  });
+}
+
+  // 章 → 節
+ if (target.id === "recordChapter") {
+  const student = students.find(s => s.id === selectedStudentId);
+  const subject = document.getElementById("recordSubject").value;
+  const courseSelect = document.getElementById("recordCourse");
+  const chapterSelect = document.getElementById("recordChapter");
+  const sectionSelect = document.getElementById("recordSection");
+  const unitContainer = document.getElementById("unitChecklist");
+
+  if (!student || !courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
+
+  const course = courseSelect.value;
+  const chapter = chapterSelect.value;
+
+  sectionSelect.innerHTML = `<option value="">節を選択</option>`;
+  unitContainer.innerHTML = `<div class="empty">節を選んでね。</div>`;
+
+  if (student.grade.includes("中")) return;
+
+  const subjectCourses = hsSubjects[subject] || {};
+  if (!course || !chapter || !subjectCourses[course]?.[chapter]) return;
+
+  Object.keys(subjectCourses[course][chapter]).forEach(section => {
+    const option = document.createElement("option");
+    option.value = section;
+    option.textContent = section;
+    sectionSelect.appendChild(option);
+  });
+}
+
+  // 節 → 単元
+ if (target.id === "recordSection") {
+  const student = students.find(s => s.id === selectedStudentId);
+  const subject = document.getElementById("recordSubject").value;
+  const courseSelect = document.getElementById("recordCourse");
+  const chapterSelect = document.getElementById("recordChapter");
+  const sectionSelect = document.getElementById("recordSection");
+  const unitContainer = document.getElementById("unitChecklist");
+
+  if (!student || !courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
+
+  const course = courseSelect.value;
+  const chapter = chapterSelect.value;
+  const section = sectionSelect.value;
+
+  unitContainer.innerHTML = "";
+
+  if (student.grade.includes("中")) return;
+
+  const subjectCourses = hsSubjects[subject] || {};
+  const units = subjectCourses[course]?.[chapter]?.[section];
+
+  if (!units || !Array.isArray(units)) {
+    unitContainer.innerHTML = `<div class="empty">単元がありません。</div>`;
+    return;
   }
+
+  units.forEach(unit => {
+    const label = document.createElement("label");
+    label.className = "unit-item";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "unit-checkbox";
+    checkbox.value = unit;
+    checkbox.onchange = updateSelectedCount;
+
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(unit));
+
+    unitContainer.appendChild(label);
+    unitContainer.appendChild(document.createElement("br"));
+  });
+
+  updateSelectedCount();
+ }
 });
