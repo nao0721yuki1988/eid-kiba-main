@@ -235,47 +235,54 @@ function renderStudentDetail() {
         </td>
       </tr>
     `).join("");
-
   detail.innerHTML = `
-    <div class="top-info">
-      <strong>名前：</strong>${escapeHtml(student.name)}<br>
-      <strong>学年：</strong>${escapeHtml(student.grade)}
-    </div>
+  <div class="top-info">
+    <strong>名前：</strong>${escapeHtml(student.name)}<br>
+    <strong>学年：</strong>${escapeHtml(student.grade)}
+  </div>
 
+  <h3>カレンダー</h3>
+  <div id="calendarControls">
+    <input type="month" id="calendarMonth" />
+  </div>
+  <div id="studentCalendar"></div>
+
+  <div class="button-row" style="margin-top:16px;">
+    <button id="toggleTaskFormBtn" type="button">宿題を追加</button>
+  </div>
+
+  <div id="taskFormArea" class="hidden" style="margin-top:16px;">
     <h3>宿題記録を追加</h3>
+
     <div class="date-row">
-     <input type="date" id="recordStartDate" />
-     <input type="date" id="recordEndDate" />
+      <input type="date" id="recordStartDate" />
+      <input type="date" id="recordEndDate" />
     </div>
 
     <select id="recordSubject" onchange="updateUnitOptions()">
-  <option value="">教科を選択</option>
-  <option value="国語">国語</option>
-  <option value="数学">数学</option>
-  <option value="英語">英語</option>
-  <option value="理科">理科</option>
-  <option value="社会">社会</option>
-</select>
+      <option value="">教科を選択</option>
+      <option value="国語">国語</option>
+      <option value="数学">数学</option>
+      <option value="英語">英語</option>
+      <option value="理科">理科</option>
+      <option value="社会">社会</option>
+    </select>
 
-<select id="recordCategory" onchange="updateUnitOptions()">
-  <option value="">分野を選択</option>
-</select>
+    <select id="recordCategory" onchange="updateUnitOptions()">
+      <option value="">分野を選択</option>
+    </select>
 
-<select id="recordCourse">
-  <option value="">講座を選択</option>
-</select>
+    <select id="recordCourse">
+      <option value="">講座を選択</option>
+    </select>
 
-<select id="recordChapter">
-  <option value="">章を選択</option>
-</select>
+    <select id="recordChapter">
+      <option value="">章を選択</option>
+    </select>
 
-<select id="recordSection">
-  <option value="">節を選択</option>
-</select>
-
-<div id="unitChecklist" class="unit-checklist">
-  <div class="empty">教科を選ぶと単元が表示されるよ。</div>
-</div>
+    <select id="recordSection">
+      <option value="">節を選択</option>
+    </select>
 
     <div id="unitChecklist" class="unit-checklist">
       <div class="empty">教科を選ぶと単元が表示されるよ。</div>
@@ -285,55 +292,65 @@ function renderStudentDetail() {
 
     <textarea id="recordMemo" placeholder="メモ（任意）"></textarea>
     <button onclick="addHomeworkRecord()">選択した単元をまとめて追加</button>
+  </div>
 
-    <h3>未視聴</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>出した日</th>
-          <th>教科</th>
-          <th>単元</th>
-          <th>視聴</th>
-          <th>メモ</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>${unwatchedRows}</tbody>
-    </table>
+  <h3>未視聴</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>出した日</th>
+        <th>教科</th>
+        <th>単元</th>
+        <th>視聴</th>
+        <th>メモ</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>${unwatchedRows}</tbody>
+  </table>
 
-    <h3>視聴済み</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>視聴日</th>
-          <th>教科</th>
-          <th>単元</th>
-          <th>状態</th>
-          <th>内容</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>${watchedRows}</tbody>
-    </table>
-
-    <h3>カレンダー</h3>
-    <div id="calendarControls">
-    <input type="month" id="calendarMonth" />
-    </div>
-    <div id="studentCalendar"></div>
-  `;
+  <h3>視聴済み</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>視聴日</th>
+        <th>教科</th>
+        <th>単元</th>
+        <th>状態</th>
+        <th>内容</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>${watchedRows}</tbody>
+  </table>
+`;
 
  const today = new Date().toISOString().split("T")[0];
- const recordStartDate = document.getElementById("recordStartDate");
- const recordEndDate = document.getElementById("recordEndDate");
 
- if (recordStartDate) recordStartDate.value = today;
- if (recordEndDate) recordEndDate.value = today;
+const recordStartDate = document.getElementById("recordStartDate");
+const recordEndDate = document.getElementById("recordEndDate");
 
- const calendarMonth = document.getElementById("calendarMonth");
- if (calendarMonth) {
+if (recordStartDate) recordStartDate.value = today;
+if (recordEndDate) recordEndDate.value = today;
+
+const calendarMonth = document.getElementById("calendarMonth");
+if (calendarMonth) {
   calendarMonth.value = today.slice(0, 7);
 }
+
+const toggleTaskFormBtn = document.getElementById("toggleTaskFormBtn");
+const taskFormArea = document.getElementById("taskFormArea");
+
+if (toggleTaskFormBtn && taskFormArea) {
+  toggleTaskFormBtn.addEventListener("click", () => {
+    taskFormArea.classList.toggle("hidden");
+    toggleTaskFormBtn.textContent = taskFormArea.classList.contains("hidden")
+      ? "宿題を追加"
+      : "宿題入力を閉じる";
+  });
+}
+
+renderStudentCalendar();
 }
 
 function updateUnitOptions() {

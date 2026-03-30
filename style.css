@@ -196,3 +196,33 @@ th {
     flex-direction: column;
   }
 }
+
+.hidden {
+  display: none;
+}
+
+#studentCalendar {
+  margin-top: 12px;
+  overflow-x: auto;
+}
+
+#calendarControls {
+  margin-bottom: 10px;
+}
+
+.date-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.date-row input {
+  flex: 1;
+}
+
+#taskFormArea {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fafafa;
+}
