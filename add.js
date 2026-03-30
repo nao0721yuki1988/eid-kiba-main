@@ -243,7 +243,10 @@ function renderStudentDetail() {
     </div>
 
     <h3>宿題記録を追加</h3>
-    <input type="date" id="recordDate" />
+    <div class="date-row">
+     <input type="date" id="recordStartDate" />
+     <input type="date" id="recordEndDate" />
+    </div>
 
     <select id="recordSubject" onchange="updateUnitOptions()">
   <option value="">教科を選択</option>
@@ -312,11 +315,25 @@ function renderStudentDetail() {
       </thead>
       <tbody>${watchedRows}</tbody>
     </table>
+
+    <h3>カレンダー</h3>
+    <div id="calendarControls">
+    <input type="month" id="calendarMonth" />
+    </div>
+    <div id="studentCalendar"></div>
   `;
 
-  const today = new Date().toISOString().split("T")[0];
-  const recordDate = document.getElementById("recordDate");
-  if (recordDate) recordDate.value = today;
+ const today = new Date().toISOString().split("T")[0];
+ const recordStartDate = document.getElementById("recordStartDate");
+ const recordEndDate = document.getElementById("recordEndDate");
+
+ if (recordStartDate) recordStartDate.value = today;
+ if (recordEndDate) recordEndDate.value = today;
+
+ const calendarMonth = document.getElementById("calendarMonth");
+ if (calendarMonth) {
+  calendarMonth.value = today.slice(0, 7);
+}
 }
 
 function updateUnitOptions() {
@@ -416,15 +433,21 @@ async function addHomeworkRecord() {
   const student = students.find(s => s.id === selectedStudentId);
   if (!student) return;
 
-  const assignedDate = document.getElementById("recordDate").value;
+  const startDate = document.getElementById("recordStartDate").value;
+  const endDate = document.getElementById("recordEndDate").value;
   const subject = document.getElementById("recordSubject").value;
   const memo = document.getElementById("recordMemo").value.trim();
 
   const checkedUnits = Array.from(document.querySelectorAll(".unit-checkbox:checked"));
   const selectedUnits = checkedUnits.map(checkbox => checkbox.value);
 
-  if (!assignedDate || !subject || selectedUnits.length === 0) {
-    alert("日付・教科・単元を入力してね。");
+  if (!startDate || !endDate || !subject || selectedUnits.length === 0) {
+    alert("開始日・終了日・教科・単元を入力してね。");
+    return;
+  }
+
+  if (startDate > endDate) {
+    alert("終了日は開始日以降にしてね。");
     return;
   }
 
@@ -433,17 +456,19 @@ async function addHomeworkRecord() {
     return;
   }
 
-  const newRecords = selectedUnits.map(unit => ({
+  const newTask = {
     id: generateId(),
-    assignedDate,
+    startDate,
+    endDate,
     subject,
-    unit,
+    units: selectedUnits,
+    status: "notStarted",
     watched: false,
     watchedDate: "",
     memo
-  }));
+  };
 
-  const updatedRecords = [...(student.homeworkRecords || []), ...newRecords];
+  const updatedRecords = [...(student.homeworkRecords || []), newTask];
 
   try {
     await updateDoc(doc(db, "students", student.id), {
@@ -739,6 +764,63 @@ function subscribeStudents() {
   );
 }
 
+function renderStudentCalendar() {
+  const student = students.find(s => s.id === selectedStudentId);
+  const calendar = document.getElementById("studentCalendar");
+  const calendarMonth = document.getElementById("calendarMonth");
+
+  if (!student || !calendar || !calendarMonth || !calendarMonth.value) return;
+
+  const [year, month] = calendarMonth.value.split("-").map(Number);
+  const lastDay = new Date(year, month, 0).getDate();
+
+  const subjects = ["数学", "英語", "理科", "社会", "国語"];
+
+  let html = `
+    <div class="calendar-grid" style="overflow-x:auto;">
+      <table border="1" style="border-collapse:collapse; min-width:max-content;">
+        <thead>
+          <tr>
+            <th style="padding:6px; position:sticky; left:0; background:#fff;">教科</th>
+            ${Array.from({ length: lastDay }, (_, i) => `<th style="padding:6px;">${i + 1}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  subjects.forEach(subject => {
+    html += `<tr>`;
+    html += `<th style="padding:6px; position:sticky; left:0; background:#fff;">${subject}</th>`;
+
+    for (let day = 1; day <= lastDay; day++) {
+      const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+      const matchedTask = (student.homeworkRecords || []).find(record => {
+        if (record.subject !== subject) return false;
+        if (!record.startDate || !record.endDate) return false;
+        return record.startDate <= dateStr && record.endDate >= dateStr;
+      });
+
+      html += `
+        <td style="width:28px; height:28px; text-align:center;">
+          ${matchedTask ? "■" : ""}
+        </td>
+      `;
+    }
+
+    html += `</tr>`;
+  });
+
+  html += `
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  calendar.innerHTML = html;
+}
+
+
 window.login = login;
 window.logout = logout;
 window.showScreen = showScreen;
@@ -761,6 +843,7 @@ console.log("add.js 読み込み成功");
 subscribeStudents();
 renderStudentDetail();
 showScreen("loginScreen");
+renderStudentCalendar();
 
 document.addEventListener("change", function (event) {
   const target = event.target;
@@ -882,5 +965,11 @@ document.addEventListener("change", function (event) {
     });
 
     updateSelectedCount();
+  }
+});
+
+document.addEventListener("change", function (event) {
+  if (event.target.id === "calendarMonth") {
+    renderStudentCalendar();
   }
 });
