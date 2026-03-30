@@ -260,6 +260,15 @@ function renderStudentDetail() {
       <input type="date" id="recordEndDate" />
     </div>
 
+  <select id="recordSubject" onchange="updateUnitOptions()">
+   <option value="">教科を選択</option>
+   <option value="国語">国語</option>
+   <option value="数学">数学</option>
+   <option value="英語">英語</option>
+   <option value="理科">理科</option>
+   <option value="社会">社会</option>
+  </select>
+
     <!-- 中学生用 -->
 <div id="juniorFields">
   <select id="recordCategory" onchange="updateUnitOptions()">
@@ -363,7 +372,7 @@ renderStudentCalendar();
 }
 
 function updateUnitOptions() {
- const subject = document.getElementById("recordSubject").value;
+const subject = document.getElementById("recordSubject").value;
 const categorySelect = document.getElementById("recordCategory");
 
 if (categorySelect) {
