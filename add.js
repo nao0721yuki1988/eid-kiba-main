@@ -941,7 +941,7 @@ document.addEventListener("change", function (event) {
   courseSelect.innerHTML = `<option value="">講座を選択</option>`;
   chapterSelect.innerHTML = `<option value="">章を選択</option>`;
   sectionSelect.innerHTML = `<option value="">節を選択</option>`;
-  unitContainer.innerHTML = `<div class="empty">教科を選ぶと単元が表示されるよ。</div>`;
+  unitContainer.innerHTML = `<div class="empty">教科を選んでね。</div>`;
 
   // 高校生のとき
   if (!student.grade.includes("中")) {
