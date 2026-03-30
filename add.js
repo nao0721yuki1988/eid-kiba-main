@@ -363,10 +363,33 @@ renderStudentCalendar();
 }
 
 function updateUnitOptions() {
-  const subject = document.getElementById("recordSubject").value;
-  const categorySelect = document.getElementById("recordCategory");
+ const subject = document.getElementById("recordSubject").value;
+const categorySelect = document.getElementById("recordCategory");
 
-  if (subject === "数学") {
+if (categorySelect) {
+  categorySelect.innerHTML = '<option value="">分野を選択</option>';
+}
+
+if (student.grade.includes("中")) {
+  if (subject === "理科") {
+    categorySelect.innerHTML += `
+      <option value="生物">生物</option>
+      <option value="化学">化学</option>
+      <option value="物理">物理</option>
+      <option value="地学">地学</option>
+    `;
+  }
+
+  if (subject === "社会") {
+    categorySelect.innerHTML += `
+      <option value="地理">地理</option>
+      <option value="歴史">歴史</option>
+      <option value="公民">公民</option>
+    `;
+  }
+}
+
+if (subject === "数学") {
     if (categorySelect) categorySelect.style.display = "none";
   } else {
     if (categorySelect) categorySelect.style.display = "block";
