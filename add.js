@@ -260,7 +260,7 @@ function renderStudentDetail() {
       <input type="date" id="recordEndDate" />
     </div>
 
-  <select id="recordSubject" onchange="updateUnitOptions()">
+  <select id="recordSubject" onchange="updateUnitOptions('subject')">
    <option value="">教科を選択</option>
    <option value="国語">国語</option>
    <option value="数学">数学</option>
@@ -271,14 +271,14 @@ function renderStudentDetail() {
 
     <!-- 中学生用 -->
 <div id="juniorFields">
-  <select id="recordCategory" onchange="updateUnitOptions()">
+  <select id="recordCategory" onchange="updateUnitOptions('category')">
     <option value="">分野を選択</option>
   </select>
 </div>
 
 <!-- 高校生用 -->
 <div id="highFields">
-  <select id="recordCourse">
+  <select id="recordCourse" onchange="updateUnitOptions('course')">
     <option value="">講座を選択</option>
   </select>
 
@@ -371,7 +371,7 @@ if (student.grade.includes("中")) {
 renderStudentCalendar();
 }
 
-function updateUnitOptions() {
+function updateUnitOptions(changedBy = "subject") {
   const student = students.find(s => s.id === selectedStudentId);
   const subject = document.getElementById("recordSubject").value;
   const categorySelect = document.getElementById("recordCategory");
@@ -383,7 +383,8 @@ function updateUnitOptions() {
   checklist.innerHTML = "";
   selectedCount.textContent = "";
 
-  if (categorySelect) {
+  // 教科が変わった時だけ、分野の選択肢を作り直す
+  if (changedBy === "subject" && categorySelect) {
     categorySelect.innerHTML = '<option value="">分野を選択</option>';
   }
 
@@ -392,26 +393,42 @@ function updateUnitOptions() {
     if (categorySelect) categorySelect.style.display = "block";
 
     if (subject === "理科") {
-      categorySelect.innerHTML = `
-        <option value="">分野を選択</option>
-        <option value="生物">生物</option>
-        <option value="化学">化学</option>
-        <option value="物理">物理</option>
-        <option value="地学">地学</option>
-      `;
-      checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
-      return;
+      if (changedBy === "subject" && categorySelect) {
+        categorySelect.innerHTML = `
+          <option value="">分野を選択</option>
+          <option value="生物">生物</option>
+          <option value="化学">化学</option>
+          <option value="物理">物理</option>
+          <option value="地学">地学</option>
+        `;
+      }
+
+      const category = categorySelect ? categorySelect.value : "";
+      if (!category) {
+        checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
+        return;
+      }
+
+      // ここから先は元の理科の単元表示処理へ
     }
 
     if (subject === "社会") {
-      categorySelect.innerHTML = `
-        <option value="">分野を選択</option>
-        <option value="地理">地理</option>
-        <option value="歴史">歴史</option>
-        <option value="公民">公民</option>
-      `;
-      checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
-      return;
+      if (changedBy === "subject" && categorySelect) {
+        categorySelect.innerHTML = `
+          <option value="">分野を選択</option>
+          <option value="地理">地理</option>
+          <option value="歴史">歴史</option>
+          <option value="公民">公民</option>
+        `;
+      }
+
+      const category = categorySelect ? categorySelect.value : "";
+      if (!category) {
+        checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
+        return;
+      }
+
+      // ここから先は元の社会の単元表示処理へ
     }
   }
 
@@ -421,12 +438,11 @@ function updateUnitOptions() {
     return;
   }
 
-  // それ以外の中学教科
   if (categorySelect) categorySelect.style.display = "block";
 
   const category = categorySelect ? categorySelect.value : "";
 
-  // ここから下は元の中学処理を続ける
+  // ↓ この下は元の中学処理を続ける
 
 
   if (!checklist || !selectedCount) return;
