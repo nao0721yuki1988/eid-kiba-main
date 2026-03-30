@@ -383,53 +383,8 @@ function updateUnitOptions(changedBy = "subject") {
   checklist.innerHTML = "";
   selectedCount.textContent = "";
 
-  // 教科が変わった時だけ、分野の選択肢を作り直す
-  if (changedBy === "subject" && categorySelect) {
+  if (categorySelect) {
     categorySelect.innerHTML = '<option value="">分野を選択</option>';
-  }
-
-  // 中学生
-  if (student.grade.includes("中")) {
-    if (categorySelect) categorySelect.style.display = "block";
-
-    if (subject === "理科") {
-      if (changedBy === "subject" && categorySelect) {
-        categorySelect.innerHTML = `
-          <option value="">分野を選択</option>
-          <option value="生物">生物</option>
-          <option value="化学">化学</option>
-          <option value="物理">物理</option>
-          <option value="地学">地学</option>
-        `;
-      }
-
-      const category = categorySelect ? categorySelect.value : "";
-      if (!category) {
-        checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
-        return;
-      }
-
-      // ここから先は元の理科の単元表示処理へ
-    }
-
-    if (subject === "社会") {
-      if (changedBy === "subject" && categorySelect) {
-        categorySelect.innerHTML = `
-          <option value="">分野を選択</option>
-          <option value="地理">地理</option>
-          <option value="歴史">歴史</option>
-          <option value="公民">公民</option>
-        `;
-      }
-
-      const category = categorySelect ? categorySelect.value : "";
-      if (!category) {
-        checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
-        return;
-      }
-
-      // ここから先は元の社会の単元表示処理へ
-    }
   }
 
   // 高校数学
@@ -438,82 +393,90 @@ function updateUnitOptions(changedBy = "subject") {
     return;
   }
 
-  if (categorySelect) categorySelect.style.display = "block";
+  // 中学生
+  if (student.grade.includes("中")) {
+    const gradeData = unitsByGrade[student.grade] || {};
 
-  const category = categorySelect ? categorySelect.value : "";
+    // 理科は分野なしで直接章表示
+    if (subject === "理科") {
+      if (categorySelect) categorySelect.style.display = "none";
 
-  // ↓ この下は元の中学処理を続ける
-
-
-  if (!checklist || !selectedCount) return;
-
-  checklist.innerHTML = "";
-  selectedCount.textContent = "";
-
-  if (!student || !subject) {
-    if (categorySelect) {
-      categorySelect.innerHTML = '<option value="">分野を選択</option>';
-    }
-    checklist.innerHTML = '<div class="empty">教科を選ぶと単元が表示されるよ。</div>';
-    return;
-  }
-
-  const gradeData = unitsByGrade[student.grade] || {};
-  const subjectData = gradeData[subject] || {};
-
-  if (subject !== "社会" && categorySelect) {
-    categorySelect.innerHTML = '<option value="">分野を選択</option>';
-  }
-
-  if (subject === "社会") {
-    if (categorySelect) {
-      categorySelect.innerHTML = `
-        <option value="">分野を選択</option>
-        <option value="地理" ${category === "地理" ? "selected" : ""}>地理</option>
-        <option value="歴史" ${category === "歴史" ? "selected" : ""}>歴史</option>
-        <option value="公民" ${category === "公民" ? "selected" : ""}>公民</option>
-      `;
-    }
-
-    if (!category) {
-      checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
+      const subjectData = gradeData["理科"] || {};
+      renderChapterUnits(subjectData);
       return;
     }
 
-    const categoryData = subjectData[category] || {};
-    renderChapterUnits(categoryData);
-    return;
-  }
+    // 社会だけ分野あり
+    if (subject === "社会") {
+      if (categorySelect) {
+        categorySelect.style.display = "block";
 
-  renderChapterUnits(subjectData);
+        if (changedBy === "subject") {
+          categorySelect.innerHTML = `
+            <option value="">分野を選択</option>
+            <option value="地理">地理</option>
+            <option value="歴史">歴史</option>
+            <option value="公民">公民</option>
+          `;
+        }
+      }
 
-  function renderChapterUnits(data) {
-    if (Object.keys(data).length === 0) {
-      checklist.innerHTML = '<div class="empty">単元がありません。</div>';
+      const category = categorySelect ? categorySelect.value : "";
+      if (!category) {
+        checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
+        return;
+      }
+
+      const subjectData = gradeData["社会"] || {};
+      const categoryData = subjectData[category] || {};
+      renderChapterUnits(categoryData);
       return;
     }
 
-    let html = "";
+    // それ以外の中学教科（国語・数学・英語）
+    if (categorySelect) categorySelect.style.display = "none";
 
-    Object.entries(data).forEach(([chapter, unitList]) => {
-      html += `
-        <details class="chapter-box">
-          <summary>${escapeHtml(chapter)}</summary>
-          <div class="chapter-units">
-            ${unitList.map(unit => `
-              <label class="unit-item">
-                <input type="checkbox" class="unit-checkbox" value="${escapeHtml(unit)}" onchange="updateSelectedCount()" />
-                <span>${escapeHtml(unit)}</span>
-              </label>
-            `).join("")}
-          </div>
-        </details>
-      `;
-    });
-
-    checklist.innerHTML = html;
-    updateSelectedCount();
+    const subjectData = gradeData[subject] || {};
+    renderChapterUnits(subjectData);
+    return;
   }
+
+  // ここに来るのは主に高校の数学以外
+  if (categorySelect) categorySelect.style.display = "none";
+}
+
+function renderChapterUnits(data) {
+  const checklist = document.getElementById("unitChecklist");
+  if (!checklist) return;
+
+  if (!data || Object.keys(data).length === 0) {
+    checklist.innerHTML = '<div class="empty">単元がありません。</div>';
+    return;
+  }
+
+  let html = "";
+
+  Object.entries(data).forEach(([chapter, unitList]) => {
+    html += `
+      <details class="chapter-box">
+        <summary>${escapeHtml(chapter)}</summary>
+        <div class="chapter-units">
+          ${unitList.map(unit => `
+            <label class="unit-item">
+              <input type="checkbox"
+                     class="unit-checkbox"
+                     value="${escapeHtml(unit)}"
+                     onchange="updateSelectedCount()" />
+              <span>${escapeHtml(unit)}</span>
+            </label>
+          `).join("")}
+        </div>
+      </details>
+    `;
+  });
+
+  checklist.innerHTML = html;
+  updateSelectedCount();
 }
 
 async function addHomeworkRecord() {
