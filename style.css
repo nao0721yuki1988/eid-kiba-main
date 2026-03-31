@@ -247,3 +247,76 @@ th {
 .calendar-table {
   border-collapse: collapse;
 }
+
+.calendar-table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.calendar-table th,
+.calendar-table td {
+  border: 1px solid #ddd;
+  height: 40px;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.calendar-subject-cell {
+  width: 60px;
+  font-weight: bold;
+  background: #f7f7f7;
+}
+
+.calendar-day-cell {
+  position: relative;
+}
+
+.calendar-track {
+  position: relative;
+  height: 40px;
+}
+
+.calendar-bar {
+  position: absolute;
+  top: 8px;
+  height: 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.record-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+}
+
+.record-modal-content {
+  background: #fff;
+  width: min(420px, 90%);
+  margin: 10vh auto;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.record-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.record-modal-content p {
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+

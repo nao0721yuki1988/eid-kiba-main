@@ -882,12 +882,13 @@ function renderStudentCalendar(student) {
 
   const monthValue = monthInput.value || new Date().toISOString().slice(0, 7);
   const [year, month] = monthValue.split("-").map(Number);
-
   const daysInMonth = new Date(year, month, 0).getDate();
+
   const subjects = ["国語", "数学", "英語", "理科", "社会"];
+  const cellWidth = 36; // 1日ぶんの幅
 
   let html = `<table class="calendar-table">`;
-  html += `<thead><tr><th>教科</th>`;
+  html += `<thead><tr><th class="calendar-subject-cell">教科</th>`;
 
   for (let day = 1; day <= daysInMonth; day++) {
     html += `<th>${day}</th>`;
@@ -896,38 +897,47 @@ function renderStudentCalendar(student) {
   html += `</tr></thead><tbody>`;
 
   subjects.forEach(subject => {
-    html += `<tr><th>${subject}</th>`;
+    html += `<tr>`;
+    html += `<th class="calendar-subject-cell">${subject}</th>`;
 
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    // 1行ぶんの背景セル
+    html += `<td colspan="${daysInMonth}" class="calendar-day-cell">`;
+    html += `<div class="calendar-track" style="width:${daysInMonth * cellWidth}px;">`;
 
-  let cellHtml = "";
+    const subjectRecords = (student.homeworkRecords || []).filter(record => {
+      return record.subject === subject;
+    });
 
-  const recordsForDay = (student.homeworkRecords || []).filter(record => {
-  return (
-    record.subject === subject &&
-    record.startDate <= dateStr &&
-    record.endDate >= dateStr
-  );
-});
+    subjectRecords.forEach(record => {
+      const start = new Date(record.startDate);
+      const end = new Date(record.endDate);
 
-if (recordsForDay.length > 0) {
-  const record = recordsForDay[0]; // とりあえず1つ
+      const monthStart = new Date(year, month - 1, 1);
+      const monthEnd = new Date(year, month - 1, daysInMonth);
 
-  const color = subjectColors[record.subject] || "#999";
+      // 月外は切り詰め
+      const visibleStart = start < monthStart ? monthStart : start;
+      const visibleEnd = end > monthEnd ? monthEnd : end;
 
-  cellHtml = `
-    <div class="calendar-bar"
-         style="background:${color}"
-         onclick="showCalendarRecordDetail('${dateStr}', '${subject}')">
-    </div>
-  `;
-}
+      if (visibleStart > visibleEnd) return;
 
-html += `<td>${cellHtml}</td>`;
+      const startDay = visibleStart.getDate();
+      const endDay = visibleEnd.getDate();
 
-   }
+      const left = (startDay - 1) * cellWidth;
+      const width = (endDay - startDay + 1) * cellWidth;
 
+      const color = subjectColors[record.subject] || "#999";
+
+      html += `
+        <div class="calendar-bar"
+             style="left:${left}px; width:${width}px; background:${color};"
+             onclick="showCalendarRecordDetail('${visibleStart.toISOString().slice(0,10)}', '${subject}')">
+        </div>
+      `;
+    });
+
+    html += `</div></td>`;
     html += `</tr>`;
   });
 
@@ -939,26 +949,41 @@ function showCalendarRecordDetail(dateStr, subject) {
   const student = students.find(s => s.id === selectedStudentId);
   if (!student) return;
 
-  const records = (student.homeworkRecords || []).filter(record => 
-    record.subject === subject &&
-    record.startDate <= dateStr &&
-    record.endDate >= dateStr
-  );
+  const records = (student.homeworkRecords || []).filter(record => {
+    return (
+      record.subject === subject &&
+      record.startDate <= dateStr &&
+      record.endDate >= dateStr
+    );
+  });
 
   if (records.length === 0) return;
 
-  let text = "";
-   
-   records.forEach(record => {
-    text +=
-    "教科: " + record.subject + "\n" +
-    "単元: " + record.unit + "\n" +
-    "期間: " + record.startDate + " 〜 " + record.endDate + "\n" +
-    "視聴: " + (record.watched ? "視聴済み" : "未視聴") + "\n" + "\n\n";
-});
+  let html = "";
 
- alert(text);
+  records.forEach(record => {
+    html += `
+      <div style="margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid #eee;">
+        <p><strong>教科：</strong>${record.subject}</p>
+        <p><strong>単元：</strong>${record.unit}</p>
+        <p><strong>期間：</strong>${record.startDate}〜${record.endDate}</p>
+        <p><strong>視聴：</strong>${record.watched ? "視聴済み" : "未視聴"}</p>
+        <p><strong>メモ：</strong>${record.memo || "なし"}</p>
+      </div>
+    `;
+  });
+
+  document.getElementById("recordModalBody").innerHTML = html;
+  document.getElementById("recordModal").style.display = "block";
 }
+
+function closeRecordModal() {
+  document.getElementById("recordModal").style.display = "none";
+}
+
+window.showCalendarRecordDetail = showCalendarRecordDetail;
+window.closeRecordModal = closeRecordModal;
+
 
 window.login = login;
 window.logout = logout;
