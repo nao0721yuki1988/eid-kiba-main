@@ -926,9 +926,7 @@ if (recordsForDay.length > 0) {
 
 html += `<td>${cellHtml}</td>`;
 
-
-      html += `<td>${mark}</td>`;
-    }
+   }
 
     html += `</tr>`;
   });
