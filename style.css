@@ -229,8 +229,8 @@ th {
 
 .calendar-bar {
   width: 100%;
-  height: 100%;
-  border-radius: 0;
+  height: 50%;
+  border-radius: 2px;
   cursor: pointer;
   opacity: 0.9;
 }
