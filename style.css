@@ -226,3 +226,15 @@ th {
   border-radius: 10px;
   background: #fafafa;
 }
+
+.calendar-bar {
+  width: 100%;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.calendar-bar:hover {
+  opacity: 1;
+}

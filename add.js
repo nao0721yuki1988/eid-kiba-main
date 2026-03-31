@@ -34,6 +34,14 @@ const users = [
   { id: "hina_o", password: "0132", role: "teacher", name: "小田口先生" }
 ];
 
+const subjectColors = {
+  国語: "#4CAF50",
+  数学: "#2196F3",
+  英語: "#E91E63",
+  理科: "#9C2780",
+  社会: "#FF9800"
+};
+
 let students = [];
 let selectedStudentId = null;
 let currentUser = null;
@@ -893,19 +901,31 @@ function renderStudentCalendar(student) {
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-      const recordsForDay = (student.homeworkRecords || []).filter(record => {
-        return (
-          record.subject === subject &&
-          record.startDate <= dateStr &&
-          record.endDate >= dateStr
-        );
-      });
+  let cellHtml = "";
 
-      let mark = "";
-      if (recordsForDay.length > 0) {
-        const hasUnwatched = recordsForDay.some(r => !r.watched);
-        mark = hasUnwatched ? "■" : "○";
-      }
+  const recordsForDay = (student.homeworkRecords || []).filter(record => {
+  return (
+    record.subject === subject &&
+    record.startDate <= dateStr &&
+    record.endDate >= dateStr
+  );
+});
+
+if (recordsForDay.length > 0) {
+  const record = recordsForDay[0]; // とりあえず1つ
+
+  const color = subjectColors[record.subject] || "#999";
+
+  cellHtml = `
+    <div class="calendar-bar"
+         style="background:${color}"
+         onclick="showCalendarRecordDetail('${record.id}')">
+    </div>
+  `;
+}
+
+html += `<td>${cellHtml}</td>`;
+
 
       html += `<td>${mark}</td>`;
     }
@@ -917,7 +937,21 @@ function renderStudentCalendar(student) {
   calendarEl.innerHTML = html;
 }
 
+function showCalendarRecordDetail(recordId) {
+  const student = students.find(s => s.id === selectedStudentId);
+  if (!student) return;
 
+  const record = (student.homeworkRecords || []).find(r => r.id === recordId);
+  if (!record) return;
+
+  alert(
+    `教科: ${record.subject}\n` +
+    `単元: ${record.unit}\n` +
+    `開始日: ${record.startDate}\n` +
+    `終了日: ${record.endDate}\n` +
+    `視聴: ${record.watched ? "視聴済み" : "未視聴"}`
+  );
+}
 
 window.login = login;
 window.logout = logout;
