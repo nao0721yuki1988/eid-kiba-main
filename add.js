@@ -1045,6 +1045,7 @@ document.addEventListener("change", function (event) {
     option.value = section;
     option.textContent = section;
     sectionSelect.appendChild(option);
+  
   });
 }
 
@@ -1090,9 +1091,16 @@ document.addEventListener("change", function (event) {
 
     unitContainer.appendChild(label);
     unitContainer.appendChild(document.createElement("br"));
-  });
 
+  });
+} 
+
+   if (target.id === "calendarMonth") {
+  const student = students.find(s => s.id === selectedStudentId);
+  renderStudentCalendar(student);
+  }
+  
   updateSelectedCount();
-}
+
 });
 
