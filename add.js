@@ -442,9 +442,11 @@ function updateUnitOptions(changedBy = "subject") {
     // それ以外の中学教科（国語・数学・英語）
     if (categorySelect) categorySelect.style.display = "none";
 
+     console.log("中学その他 subject:", subject);
+     console.log("中学その他 subjectData:", gradeData[subject]);
+
     const subjectData = gradeData[subject] || {};
 
-    const subjectDate = gradeDate[subject]
     renderChapterUnits(subjectData);
     return;
   }
