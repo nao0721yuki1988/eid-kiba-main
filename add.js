@@ -916,32 +916,6 @@ document.addEventListener("change", function (event) {
 
   // 教科 → 講座
   if (target.id === "recordSubject") {
-    const subjectSelect = document.getElementById("recordSubject");
-    const courseSelect = document.getElementById("recordCourse");
-    const chapterSelect = document.getElementById("recordChapter");
-    const sectionSelect = document.getElementById("recordSection");
-    const unitContainer = document.getElementById("unitChecklist");
-
-    if (!subjectSelect || !courseSelect || !chapterSelect || !sectionSelect || !unitContainer) return;
-
-    const subject = subjectSelect.value;
-
-    courseSelect.innerHTML = `<option value="">講座を選択</option>`;
-    chapterSelect.innerHTML = `<option value="">章を選択</option>`;
-    sectionSelect.innerHTML = `<option value="">節を選択</option>`;
-    unitContainer.innerHTML = `<div class="empty">講座を選んでね。</div>`;
-
-    if (subject === "数学") {
-      Object.keys(hsMathCourses).forEach(course => {
-        const option = document.createElement("option");
-        option.value = course;
-        option.textContent = course;
-        courseSelect.appendChild(option);
-      });
-    }
-  }
-
- if (target.id === "recordSubject") {
   const student = students.find(s => s.id === selectedStudentId);
   const subjectSelect = document.getElementById("recordSubject");
   const courseSelect = document.getElementById("recordCourse");
@@ -953,30 +927,33 @@ document.addEventListener("change", function (event) {
 
   const subject = subjectSelect.value;
 
+  // 中学生は updateUnitOptions に任せる
+  if (student.grade.includes("中")) {
+    updateUnitOptions("subject");
+    return;
+  }
+
   courseSelect.innerHTML = `<option value="">講座を選択</option>`;
   chapterSelect.innerHTML = `<option value="">章を選択</option>`;
   sectionSelect.innerHTML = `<option value="">節を選択</option>`;
   unitContainer.innerHTML = `<div class="empty">教科を選んでね。</div>`;
 
-  // 高校生のとき
-  if (!student.grade.includes("中")) {
-    const subjectCourses = hsSubjects[subject] || {};
+  const subjectCourses = hsSubjects[subject] || {};
 
-    if (Object.keys(subjectCourses).length === 0) {
-      unitContainer.innerHTML = `<div class="empty">この教科の講座データはまだありません。</div>`;
-      return;
-    }
-
-    Object.keys(subjectCourses).forEach(course => {
-      const option = document.createElement("option");
-      option.value = course;
-      option.textContent = course;
-      courseSelect.appendChild(option);
-    });
-
-    unitContainer.innerHTML = `<div class="empty">講座を選んでね。</div>`;
+  if (Object.keys(subjectCourses).length === 0) {
+    unitContainer.innerHTML = `<div class="empty">この教科の講座データはまだありません。</div>`;
     return;
   }
+
+  Object.keys(subjectCourses).forEach(course => {
+    const option = document.createElement("option");
+    option.value = course;
+    option.textContent = course;
+    courseSelect.appendChild(option);
+  });
+
+  unitContainer.innerHTML = `<div class="empty">講座を選んでね。</div>`;
+  return;
 }
 
   if (target.id === "recordCourse") {
@@ -1084,5 +1061,6 @@ document.addEventListener("change", function (event) {
   });
 
   updateSelectedCount();
- }
+}
 });
+
