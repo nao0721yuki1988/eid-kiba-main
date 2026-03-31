@@ -229,18 +229,18 @@ th {
 
 .calendar-bar {
   width: 100%;
-  height: 100%;
-  border-radius: 0;
+  height: 20px;
+  border-radius: 4px;
   cursor: pointer;
   opacity: 0.9;
 }
 
 .calendar-bar:hover {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .calendar-table td {
-  padding: 0;
+  padding: 2px 0;
   height: 24px;
 }
 

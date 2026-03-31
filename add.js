@@ -945,8 +945,7 @@ function showCalendarRecordDetail(recordId) {
   alert(
     `教科: ${record.subject}\n` +
     `単元: ${record.unit}\n` +
-    `開始日: ${record.startDate}\n` +
-    `終了日: ${record.endDate}\n` +
+    `期間: ${record.startDate}~${record.endDate}\n` +
     `視聴: ${record.watched ? "視聴済み" : "未視聴"}`
   );
 }
