@@ -398,19 +398,12 @@ function updateUnitOptions(changedBy = "subject") {
   if (student.grade.includes("中")) {
      const gradeData = unitsByGrade[student.grade] || {};
 
-     console.log("grade:", student.grade);
-     console.log("subjectData keys:", Object.keys(subjectData));
-
-     console.log("gradeData:", gradeData);
-     console.log("subject:", subject);
-     console.log("subjectData:", gradeData[subject]);
-
-    // 理科は分野なしで直接章表示
+     // 理科は分野なしで直接章表示
     if (subject === "理科") {
       if (categorySelect) categorySelect.style.display = "none";
 
-      const subjectData = gradeData["理科"] || {};
-      renderChapterUnits(subjectData);
+      const scienceData = gradeData["理科"] || {};
+      renderChapterUnits(scienceData);
       return;
     }
 
