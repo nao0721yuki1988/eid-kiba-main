@@ -369,7 +369,12 @@ if (student.grade.includes("中")) {
 }
 }
 
-renderStudentCalendar();
+const manthInput = document.getElementById("calendarMonth");
+if (manthInput && !manthInput.value){
+  manthInput.value = new Date().toISOString().slice(0, 7);
+}
+
+renderStudentCalendar(student);
 }
 
 function updateUnitOptions(changedBy = "subject") {
