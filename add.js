@@ -891,7 +891,7 @@ function renderStudentCalendar(student) {
   html += `<thead><tr><th class="calendar-subject-cell">教科</th>`;
 
   for (let day = 1; day <= daysInMonth; day++) {
-    html += `<th style="width: ${daywidth}px;">${day}</th>`;
+    html += `<th style="width: ${dayWidth}px;">${day}</th>`;
   }
 
   html += `</tr></thead><tbody>`;
@@ -921,11 +921,11 @@ function renderStudentCalendar(student) {
 
       if (visibleStart > visibleEnd) return;
 
-      const daywidth = 40;
-      const totalwidth = daywidth * daysInMonth;
+      const dayWidth = 40;
+      const totalwidth = dayWidth * daysInMonth;
 
-      const left = (startDay - 1) * daywidth;
-      const width = (endDay - startDay + 1) * daywidth;
+      const left = (startDay - 1) * dayWidth;
+      const width = (endDay - startDay + 1) * dayWidth;
 
       const color = subjectColors[record.subject] || "#999";
 
