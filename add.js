@@ -497,52 +497,84 @@ function renderChapterUnits(data) {
 
 async function addHomeworkRecord() {
   const student = students.find(s => s.id === selectedStudentId);
-  if (!student) return;
-
-  const startDate = document.getElementById("recordStartDate").value;
-  const endDate = document.getElementById("recordEndDate").value;
-  const subject = document.getElementById("recordSubject").value;
-  const memo = document.getElementById("recordMemo").value.trim();
-
-  const checkedUnits = Array.from(document.querySelectorAll(".unit-checkbox:checked"));
-  const selectedUnits = checkedUnits.map(checkbox => checkbox.value);
-
-  if (!startDate || !endDate || !subject || selectedUnits.length === 0) {
-    alert("開始日・終了日・教科・単元を入力してね。");
+  if (!student) {
+    alert("生徒情報が見つからないよ。");
     return;
   }
 
-  if (startDate > endDate) {
-    alert("終了日は開始日以降にしてね。");
+  const startDate = document.getElementById("recordStartDate")?.value || "";
+  const endDate = document.getElementById("recordEndDate")?.value || "";
+  const subject = document.getElementById("recordSubject")?.value || "";
+  const category = document.getElementById("recordCategory")?.value || "";
+  const course = document.getElementById("recordCourse")?.value || "";
+  const chapter = document.getElementById("recordChapter")?.value || "";
+  const section = document.getElementById("recordSection")?.value || "";
+  const memo = document.getElementById("recordMemo")?.value.trim() || "";
+
+  const checkedUnits = Array.from(
+    document.querySelectorAll(".unit-checkbox:checked")
+  ).map(cb => cb.value);
+
+  if (!startDate || !endDate) {
+    alert("開始日と終了日を入れてね。");
     return;
   }
 
-  if (selectedUnits.length > 5) {
-    alert("単元は5個まで選んでね。");
+  if (!subject) {
+    alert("教科を選んでね。");
     return;
   }
 
-  const newTask = {
+  if (checkedUnits.length === 0) {
+    alert("単元を1つ以上選んでね。");
+    return;
+  }
+
+  const newRecords = checkedUnits.map(unit => ({
     id: generateId(),
     startDate,
     endDate,
     subject,
-    units: selectedUnits,
-    status: "notStarted",
+    category,
+    course,
+    chapter,
+    section,
+    unit,
     watched: false,
     watchedDate: "",
     memo
-  };
+  }));
 
-  const updatedRecords = [...(student.homeworkRecords || []), newTask];
+  const updatedRecords = [...(student.homeworkRecords || []), ...newRecords];
 
   try {
-    await updateDoc(doc(db, "students", student.id), {
+    const studentRef = doc(db, "students", student.id);
+
+    await updateDoc(studentRef, {
       homeworkRecords: updatedRecords
     });
+
+    student.homeworkRecords = updatedRecords;
+
+    alert(`${checkedUnits.length}件追加したよ。`);
+
+    // 入力欄リセット
+    document.querySelectorAll(".unit-checkbox").forEach(cb => {
+      cb.checked = false;
+    });
+
+    const selectedCount = document.getElementById("selectedCount");
+    if (selectedCount) {
+      selectedCount.textContent = "0個選択中";
+    }
+
+    const memoEl = document.getElementById("recordMemo");
+    if (memoEl) memoEl.value = "";
+
+    renderStudentDetail();
   } catch (error) {
-    console.error("宿題追加エラー:", error);
-    alert("宿題追加に失敗したよ。");
+    console.error("保存エラー:", error);
+    alert("保存に失敗したよ。Consoleを見てね。");
   }
 }
 
