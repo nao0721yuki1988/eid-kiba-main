@@ -919,7 +919,7 @@ if (recordsForDay.length > 0) {
   cellHtml = `
     <div class="calendar-bar"
          style="background:${color}"
-         onclick="showCalendarRecordDetail('${record.id}')">
+         onclick="showCalendarRecordDetail('${dateStr}', '${subject}')">
     </div>
   `;
 }
@@ -939,15 +939,25 @@ function showCalendarRecordDetail(recordId) {
   const student = students.find(s => s.id === selectedStudentId);
   if (!student) return;
 
-  const record = (student.homeworkRecords || []).find(r => r.id === recordId);
-  if (!record) return;
-
-  alert(
-    `教科: ${record.subject}\n` +
-    `単元: ${record.unit}\n` +
-    `期間: ${record.startDate}~${record.endDate}\n` +
-    `視聴: ${record.watched ? "視聴済み" : "未視聴"}`
+  const records = (student.homeworkRecords || []).filter(record => 
+    record.subject === subject &&
+    record.startDate <= dateStr &&
+    record.endDate >= dateStr
   );
+
+  if (records.length === 0) return;
+
+  let text = "";
+   
+   records.forEach(record => {
+    text +=
+    "教科: " + record.subject + "\n" +
+    "単元: " + record.unit + "\n" +
+    "期間: " + record.startDate + " 〜 " + record.endDate + "\n" +
+    "視聴: " + (record.watched ? "視聴済み" : "未視聴") + "\n" + "\n\n";
+});
+
+ alert(text);
 }
 
 window.login = login;
