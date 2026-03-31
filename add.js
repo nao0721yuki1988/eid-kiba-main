@@ -399,6 +399,8 @@ function updateUnitOptions(changedBy = "subject") {
      const gradeData = unitsByGrade[student.grade] || {};
 
      console.log("grade:", student.grade);
+     console.log("subjectData keys:", Object.keys(subjectData));
+
      console.log("gradeData:", gradeData);
      console.log("subject:", subject);
      console.log("subjectData:", gradeData[subject]);
@@ -458,6 +460,9 @@ function updateUnitOptions(changedBy = "subject") {
 
 function renderChapterUnits(data) {
   const checklist = document.getElementById("unitChecklist");
+
+  console.log("checklist:", checklist);
+
   if (!checklist) return;
 
   if (!data || Object.keys(data).length === 0) {
