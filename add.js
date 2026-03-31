@@ -935,7 +935,7 @@ html += `<td>${cellHtml}</td>`;
   calendarEl.innerHTML = html;
 }
 
-function showCalendarRecordDetail(recordId) {
+function showCalendarRecordDetail(dateStr, subject) {
   const student = students.find(s => s.id === selectedStudentId);
   if (!student) return;
 
