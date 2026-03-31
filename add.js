@@ -414,44 +414,45 @@ function updateUnitOptions(changedBy = "subject") {
       return;
     }
 
-    // 社会だけ分野あり
-    if (subject === "社会") {
-      if (categorySelect) {
-        categorySelect.style.display = "block";
+// 社会だけ分野あり
+if (subject === "社会") {
+  if (categorySelect) {
+    categorySelect.style.display = "block";
 
-        if (changedBy === "subject") {
-          categorySelect.innerHTML = `
-            <option value="">分野を選択</option>
-            <option value="地理">地理</option>
-            <option value="歴史">歴史</option>
-            <option value="公民">公民</option>
-          `;
-        }
-      }
-
-      const category = categorySelect ? categorySelect.value : "";
-      if (!category) {
-        checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
-        return;
-      }
-
-      const subjectData = gradeData["社会"] || {};
-      const categoryData = subjectData[category] || {};
-      renderChapterUnits(categoryData);
-      return;
+    if (changedBy === "subject") {
+      categorySelect.innerHTML = `
+        <option value="">分野を選択</option>
+        <option value="地理">地理</option>
+        <option value="歴史">歴史</option>
+        <option value="公民">公民</option>
+      `;
     }
+  }
 
-    // それ以外の中学教科（国語・数学・英語）
-    if (categorySelect) categorySelect.style.display = "none";
-
-     console.log("中学その他 subject:", subject);
-     console.log("中学その他 subjectData:", gradeData[subject]);
-
-    const subjectData = gradeData[subject] || {};
-     console.log("subjectData raw:", subjectData);
-     console.log("subjectData keys:", Object.keys(subjectData));
-    renderChapterUnits(subjectData);
+  const category = categorySelect ? categorySelect.value : "";
+  if (!category) {
+    checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
     return;
+  }
+
+  const socialData = gradeData["社会"] || {};
+  const categoryData = socialData[category] || {};
+  renderChapterUnits(categoryData);
+  return;
+}
+
+// それ以外の中学教科（国語・数学・英語）
+if (categorySelect) categorySelect.style.display = "none";
+
+console.log("中学その他 subject:", subject);
+console.log("中学その他 data:", gradeData[subject]);
+
+const generalData = gradeData[subject] || {};
+console.log("generalData raw:", generalData);
+console.log("generalData keys:", Object.keys(generalData));
+
+renderChapterUnits(generalData);
+return;
   }
 
   // ここに来るのは主に高校の数学以外
