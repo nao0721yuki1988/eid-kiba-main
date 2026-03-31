@@ -396,7 +396,12 @@ function updateUnitOptions(changedBy = "subject") {
 
   // 中学生
   if (student.grade.includes("中")) {
-    const gradeData = unitsByGrade[student.grade] || {};
+     const gradeData = unitsByGrade[student.grade] || {};
+
+     console.log("grade:", student.grade);
+     console.log("gradeData:", gradeData);
+     console.log("subject:", subject);
+     console.log("subjectData:", gradeData[subject]);
 
     // 理科は分野なしで直接章表示
     if (subject === "理科") {
