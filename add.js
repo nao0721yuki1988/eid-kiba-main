@@ -454,13 +454,14 @@ return;
 
 function renderChapterUnits(data) {
   const checklist = document.getElementById("unitChecklist");
-
   console.log("checklist:", checklist);
+  console.log("data inside render:", data);
 
   if (!checklist) return;
 
   if (!data || Object.keys(data).length === 0) {
     checklist.innerHTML = '<div class="empty">単元がありません。</div>';
+    console.log("emptyを書き込み");
     return;
   }
 
@@ -485,7 +486,12 @@ function renderChapterUnits(data) {
     `;
   });
 
+  console.log("renderするhtml:", html);
+
   checklist.innerHTML = html;
+
+  console.log("書き込み後のinnerHTML:", checklist.innerHTML);
+
   updateSelectedCount();
 }
 
