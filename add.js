@@ -967,6 +967,7 @@ window.showSubjectRecords = showSubjectRecords;
 window.updateUnitOptions = updateUnitOptions;
 window.updateSelectedCount = updateSelectedCount;
 window.showRecordDetail = showRecordDetail;
+window.showCalendarRecordDetail = showCalendarRecordDetail;
 
 console.log("add.js 読み込み成功");
 subscribeStudents();
