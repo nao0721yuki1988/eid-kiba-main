@@ -443,6 +443,8 @@ function updateUnitOptions(changedBy = "subject") {
     if (categorySelect) categorySelect.style.display = "none";
 
     const subjectData = gradeData[subject] || {};
+
+    const subjectDate = gradeDate[subject]
     renderChapterUnits(subjectData);
     return;
   }
