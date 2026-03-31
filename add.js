@@ -891,7 +891,7 @@ function renderStudentCalendar(student) {
   html += `<thead><tr><th class="calendar-subject-cell">教科</th>`;
 
   for (let day = 1; day <= daysInMonth; day++) {
-    html += `<th>${day}</th>`;
+    html += `<th style="width: ${daywidth}px;">${day}</th>`;
   }
 
   html += `</tr></thead><tbody>`;
@@ -902,7 +902,7 @@ function renderStudentCalendar(student) {
 
     // 1行ぶんの背景セル
     html += `<td colspan="${daysInMonth}" class="calendar-day-cell">`;
-    html += `<div class="calendar-track" style="width:${daysInMonth * cellWidth}px;">`;
+    html += `<div class="calendar-track" style="width:${totalwidth}px;">`;
 
     const subjectRecords = (student.homeworkRecords || []).filter(record => {
       return record.subject === subject;
@@ -921,18 +921,18 @@ function renderStudentCalendar(student) {
 
       if (visibleStart > visibleEnd) return;
 
-      const startDay = visibleStart.getDate();
-      const endDay = visibleEnd.getDate();
+      const daywidth = 40;
+      const totalwidth = daywidth * daysInMonth;
 
-      const left = (startDay - 1) * cellWidth;
-      const width = (endDay - startDay + 1) * cellWidth;
+      const left = (startDay - 1) * daywidth;
+      const width = (endDay - startDay + 1) * daywidth;
 
       const color = subjectColors[record.subject] || "#999";
 
       html += `
         <div class="calendar-bar"
              style="left:${left}px; width:${width}px; background:${color};"
-             onclick="showCalendarRecordDetail('${visibleStart.toISOString().slice(0,10)}', '${subject}')">
+             onclick="showCalendarRecordDetail('${dateStr}', '${subject}')">
         </div>
       `;
     });
