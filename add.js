@@ -446,7 +446,8 @@ function updateUnitOptions(changedBy = "subject") {
      console.log("中学その他 subjectData:", gradeData[subject]);
 
     const subjectData = gradeData[subject] || {};
-
+     console.log("subjectData raw:", subjectData);
+     console.log("subjectData keys:", Object.keys(subjectData));
     renderChapterUnits(subjectData);
     return;
   }
