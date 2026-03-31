@@ -862,61 +862,56 @@ function subscribeStudents() {
   );
 }
 
-function renderStudentCalendar() {
-  const student = students.find(s => s.id === selectedStudentId);
-  const calendar = document.getElementById("studentCalendar");
-  const calendarMonth = document.getElementById("calendarMonth");
+function renderStudentCalendar(student) {
+  const monthInput = document.getElementById("calendarMonth");
+  const calendarEl = document.getElementById("studentCalendar");
+  if (!monthInput || !calendarEl || !student) return;
 
-  if (!student || !calendar || !calendarMonth || !calendarMonth.value) return;
+  const monthValue = monthInput.value || new Date().toISOString().slice(0, 7);
+  const [year, month] = monthValue.split("-").map(Number);
 
-  const [year, month] = calendarMonth.value.split("-").map(Number);
-  const lastDay = new Date(year, month, 0).getDate();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const subjects = ["国語", "数学", "英語", "理科", "社会"];
 
-  const subjects = ["数学", "英語", "理科", "社会", "国語"];
+  let html = `<table class="calendar-table">`;
+  html += `<thead><tr><th>教科</th>`;
 
-  let html = `
-    <div class="calendar-grid" style="overflow-x:auto;">
-      <table border="1" style="border-collapse:collapse; min-width:max-content;">
-        <thead>
-          <tr>
-            <th style="padding:6px; position:sticky; left:0; background:#fff;">教科</th>
-            ${Array.from({ length: lastDay }, (_, i) => `<th style="padding:6px;">${i + 1}</th>`).join("")}
-          </tr>
-        </thead>
-        <tbody>
-  `;
+  for (let day = 1; day <= daysInMonth; day++) {
+    html += `<th>${day}</th>`;
+  }
+
+  html += `</tr></thead><tbody>`;
 
   subjects.forEach(subject => {
-    html += `<tr>`;
-    html += `<th style="padding:6px; position:sticky; left:0; background:#fff;">${subject}</th>`;
+    html += `<tr><th>${subject}</th>`;
 
-    for (let day = 1; day <= lastDay; day++) {
+    for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-      const matchedTask = (student.homeworkRecords || []).find(record => {
-        if (record.subject !== subject) return false;
-        if (!record.startDate || !record.endDate) return false;
-        return record.startDate <= dateStr && record.endDate >= dateStr;
+      const recordsForDay = (student.homeworkRecords || []).filter(record => {
+        return (
+          record.subject === subject &&
+          record.startDate <= dateStr &&
+          record.endDate >= dateStr
+        );
       });
 
-      html += `
-        <td style="width:28px; height:28px; text-align:center;">
-          ${matchedTask ? "■" : ""}
-        </td>
-      `;
+      let mark = "";
+      if (recordsForDay.length > 0) {
+        const hasUnwatched = recordsForDay.some(r => !r.watched);
+        mark = hasUnwatched ? "■" : "○";
+      }
+
+      html += `<td>${mark}</td>`;
     }
 
     html += `</tr>`;
   });
 
-  html += `
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  calendar.innerHTML = html;
+  html += `</tbody></table>`;
+  calendarEl.innerHTML = html;
 }
+
 
 
 window.login = login;
