@@ -884,8 +884,11 @@ function renderStudentCalendar(student) {
   const [year, month] = monthValue.split("-").map(Number);
   const daysInMonth = new Date(year, month, 0).getDate();
 
-  const subjects = ["国語", "数学", "英語", "理科", "社会"];
+    
   const isJunior = student.grade.includes("中");
+  const subjects = isJunior
+   ? ["国語", "数学", "英語", "理科", "社会"]
+   : [...new Set((student.homeworkRecords || []).map(record => record.subject))];
 
   const dayWidth = 36; // 1日ぶんの幅
   const totalWidth = dayWidth * daysInMonth;
@@ -910,8 +913,10 @@ function renderStudentCalendar(student) {
      const subjectRecords = (student.homeworkRecords || []).filter(record => {
       return record.subject === subject;
 
+    if (subjectRecords.length === 0) return;
+
     if (!isJunior) {
-      const firstCourse = subjectRecords[0] ?.course || "講座未設定";
+      const firstCourse = subjectRecords[0]?.course || "講座未設定";
       html += `<th class="calendar-course-cell">${firstCourse}</th>`;
     }
 
