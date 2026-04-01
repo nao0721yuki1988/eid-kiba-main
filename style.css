@@ -273,5 +273,6 @@ th {
   border-radius: 6px;
   cursor: pointer;
   opacity: 0.9;
-  z-index: 2;
+  z-index: 10;
+  pointer-events: auto;
 }
