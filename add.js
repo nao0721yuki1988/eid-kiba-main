@@ -942,8 +942,14 @@ Object.values(grouped).forEach(groupRecords => {
 
   const color = subjectColors[firstRecord.subject] || "#999";
 
-  const unitsHtml = `<div class="calendar-bar-unit">${groupRecords[0].unit}</div>`;
-  
+  const sortedRecords = [...groupRecords].sort((a, b) => {
+    return a.unit.localeCompare(b.unit, 'ja');
+  });
+
+  const unitsHtml = sortedRecords.map(record => {
+    return `<div class="calendar-bar-unit">${record.unit}</div>`;
+  }).join("");
+
   html += `
     <div class="calendar-bar"
          style="left:${left}px; width:${width}px; background:${color};"

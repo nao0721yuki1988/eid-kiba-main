@@ -261,7 +261,7 @@ th {
 
 .calendar-track {
   position: relative;
-  min-height: 72px;
+  min-height: 100px;
   z-index: 1;
 }
 
@@ -284,9 +284,7 @@ th {
 }
 
 .calendar-bar-unit {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .record-modal {
