@@ -922,6 +922,8 @@ function renderStudentCalendar(student) {
 
       if (visibleStart > visibleEnd) return;
 
+      const startDay = visibleStart.getDate();
+      const endDay = visibleEnd.getDate();
       const dayWidth = 40;
       const totalWidth = dayWidth * daysInMonth;
 
