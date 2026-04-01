@@ -885,7 +885,7 @@ function renderStudentCalendar(student) {
   const daysInMonth = new Date(year, month, 0).getDate();
 
   const subjects = ["国語", "数学", "英語", "理科", "社会"];
-  const cellWidth = 36; // 1日ぶんの幅
+  const dayWidth = 36; // 1日ぶんの幅
 
   let html = `<table class="calendar-table">`;
   html += `<thead><tr><th class="calendar-subject-cell">教科</th>`;
@@ -902,7 +902,7 @@ function renderStudentCalendar(student) {
 
     // 1行ぶんの背景セル
     html += `<td colspan="${daysInMonth}" class="calendar-day-cell">`;
-    html += `<div class="calendar-track" style="width:${totalwidth}px;">`;
+    html += `<div class="calendar-track" style="width:${totalWidth}px;">`;
 
     const subjectRecords = (student.homeworkRecords || []).filter(record => {
       return record.subject === subject;
@@ -922,7 +922,7 @@ function renderStudentCalendar(student) {
       if (visibleStart > visibleEnd) return;
 
       const dayWidth = 40;
-      const totalwidth = dayWidth * daysInMonth;
+      const totalWidth = dayWidth * daysInMonth;
 
       const left = (startDay - 1) * dayWidth;
       const width = (endDay - startDay + 1) * dayWidth;
