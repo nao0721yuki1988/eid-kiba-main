@@ -935,7 +935,7 @@ function renderStudentCalendar(student) {
       html += `
         <div class="calendar-bar"
              style="left:${left}px; width:${width}px; background:${color};"
-             onclick="showCalendarRecordDetail('${dateStr}', '${subject}')">
+             onclick="showCalendarRecordDetail('${record.startDate}', '${record.endDate}', '${subject}')">
         </div>
       `;
     });
@@ -948,15 +948,15 @@ function renderStudentCalendar(student) {
   calendarEl.innerHTML = html;
 }
 
-function showCalendarRecordDetail(dateStr, subject) {
+function showCalendarRecordDetail(startDate, endDate, subject) {
   const student = students.find(s => s.id === selectedStudentId);
   if (!student) return;
 
   const records = (student.homeworkRecords || []).filter(record => {
     return (
       record.subject === subject &&
-      record.startDate <= dateStr &&
-      record.endDate >= dateStr
+      record.startDate <= startDate &&
+      record.endDate >= endDate
     );
   });
 
