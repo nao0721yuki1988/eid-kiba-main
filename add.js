@@ -906,39 +906,52 @@ function renderStudentCalendar(student) {
     html += `<div class="calendar-track" style="width:${totalWidth}px;">`;
 
     const subjectRecords = (student.homeworkRecords || []).filter(record => {
-      return record.subject === subject;
-    });
+  return record.subject === subject;
+});
 
-    subjectRecords.forEach(record => {
-      const start = new Date(record.startDate);
-      const end = new Date(record.endDate);
+// 同じ期間のレコードをまとめる
+const grouped = {};
 
-      const monthStart = new Date(year, month - 1, 1);
-      const monthEnd = new Date(year, month - 1, daysInMonth);
+subjectRecords.forEach(record => {
+  const key = `${record.startDate}_${record.endDate}_${record.subject}`;
+  if (!grouped[key]) {
+    grouped[key] = [];
+  }
+  grouped[key].push(record);
+});
 
-      // 月外は切り詰め
-      const visibleStart = start < monthStart ? monthStart : start;
-      const visibleEnd = end > monthEnd ? monthEnd : end;
+Object.values(grouped).forEach(groupRecords => {
+  const firstRecord = groupRecords[0];
 
-      if (visibleStart > visibleEnd) return;
+  const start = new Date(firstRecord.startDate);
+  const end = new Date(firstRecord.endDate);
 
-      const startDay = visibleStart.getDate();
-      const endDay = visibleEnd.getDate();
-      const dayWidth = 40;
-      const totalWidth = dayWidth * daysInMonth;
+  const monthStart = new Date(year, month - 1, 1);
+  const monthEnd = new Date(year, month - 1, daysInMonth);
 
-      const left = (startDay - 1) * dayWidth;
-      const width = (endDay - startDay + 1) * dayWidth - 2;
+  const visibleStart = start < monthStart ? monthStart : start;
+  const visibleEnd = end > monthEnd ? monthEnd : end;
 
-      const color = subjectColors[record.subject] || "#999";
+  if (visibleStart > visibleEnd) return;
 
-      html += `
-        <div class="calendar-bar"
-             style="left:${left}px; width:${width}px; background:${color};"
-             onclick="showCalendarRecordDetail('${record.startDate}', '${record.endDate}', '${subject}')">
-        </div>
-      `;
-    });
+  const startDay = visibleStart.getDate();
+  const endDay = visibleEnd.getDate();
+
+  const left = (startDay - 1) * dayWidth + 1;
+  const width = (endDay - startDay + 1) * dayWidth - 2;
+
+  const color = subjectColors[firstRecord.subject] || "#999";
+
+  const unitsHtml = `<div class="calendar-bar-unit">${groupRecords[0].unit}</div>`;
+  
+  html += `
+    <div class="calendar-bar"
+         style="left:${left}px; width:${width}px; background:${color};"
+         onclick="showCalendarRecordDetail('${firstRecord.startDate}', '${firstRecord.endDate}', '${firstRecord.subject}')">
+      ${unitsHtml}
+    </div>
+  `;
+});
 
     html += `</div></td>`;
     html += `</tr>`;
