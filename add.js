@@ -885,11 +885,17 @@ function renderStudentCalendar(student) {
   const daysInMonth = new Date(year, month, 0).getDate();
 
   const subjects = ["国語", "数学", "英語", "理科", "社会"];
+  const isJunior = student.grade.includes("中");
+
   const dayWidth = 36; // 1日ぶんの幅
   const totalWidth = dayWidth * daysInMonth;
 
   let html = `<table class="calendar-table">`;
   html += `<thead><tr><th class="calendar-subject-cell">教科</th>`;
+
+  if (!isJunior) {
+    html += `<th class="calendar-course-cell">講座</th>`;
+  }
 
   for (let day = 1; day <= daysInMonth; day++) {
     html += `<th class="calendar-day-header">${day}</th>`;
@@ -900,6 +906,11 @@ function renderStudentCalendar(student) {
   subjects.forEach(subject => {
     html += `<tr>`;
     html += `<th class="calendar-subject-cell">${subject}</th>`;
+
+    if (!isJunior) {
+      const firstCourse = subjectRecords[0] ? subjectRecords[0].course : "講座未設定";
+      html += `<th class="calendar-course-cell">${firstCourse}</th>`;
+    }
 
     // 1行ぶんの背景セル
     html += `<td colspan="${daysInMonth}" class="calendar-day-cell">`;

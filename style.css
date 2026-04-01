@@ -308,6 +308,18 @@ th {
   white-space: normal;
 }
 
+.calendar-course-cell {
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  background: #fafafa;
+  font-size: 13px;
+  text-align: left;
+  padding: 0 8px;
+  box-sizing: border-box;
+  font-weight: 600;
+}
+
 .record-modal {
   display: none;
   position: fixed;
