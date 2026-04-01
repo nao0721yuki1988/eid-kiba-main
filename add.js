@@ -908,7 +908,7 @@ function renderStudentCalendar(student) {
     html += `<th class="calendar-subject-cell">${subject}</th>`;
 
     if (!isJunior) {
-      const firstCourse = subjectRecords[0] ? subjectRecords[0].course : "講座未設定";
+      const firstCourse = subjectRecords[0] ?.course || "講座未設定";
       html += `<th class="calendar-course-cell">${firstCourse}</th>`;
     }
 
