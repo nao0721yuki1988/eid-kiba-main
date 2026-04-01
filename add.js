@@ -892,7 +892,7 @@ function renderStudentCalendar(student) {
   html += `<thead><tr><th class="calendar-subject-cell">教科</th>`;
 
   for (let day = 1; day <= daysInMonth; day++) {
-    html += `<th style="width: ${dayWidth}px;">${day}</th>`;
+    html += `<th class="calendar-day-header">${day}</th>`;
   }
 
   html += `</tr></thead><tbody>`;

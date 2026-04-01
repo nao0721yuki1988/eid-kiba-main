@@ -227,50 +227,36 @@ th {
   background: #fafafa;
 }
 
-.calendar-bar {
-  width: 100%;
-  height: 50%;
-  border-radius: 2px;
-  cursor: pointer;
-  opacity: 0.9;
-}
-
-.calendar-bar:hover {
-  opacity: 0.5;
-}
-
-.calendar-table td {
-  padding: 0;
-  height: 24px;
-}
-
 .calendar-table {
   border-collapse: collapse;
-}
-
-.calendar-table {
-  border-collapse: collapse;
-  width: 100%;
+  width: max-content;
   table-layout: fixed;
 }
 
 .calendar-table th,
 .calendar-table td {
   border: 1px solid #ddd;
-  height: 40px;
   padding: 0;
+  height: 40px;
   text-align: center;
   vertical-align: middle;
 }
 
 .calendar-subject-cell {
   width: 60px;
+  min-width: 60px;
   font-weight: bold;
   background: #f7f7f7;
 }
 
+.calendar-day-header {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+}
+
 .calendar-day-cell {
-  position: relative;
+  padding: 0;
 }
 
 .calendar-track {
@@ -286,37 +272,3 @@ th {
   cursor: pointer;
   opacity: 0.9;
 }
-
-.record-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 1000;
-}
-
-.record-modal-content {
-  background: #fff;
-  width: min(420px, 90%);
-  margin: 10vh auto;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-  position: relative;
-}
-
-.record-modal-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border: none;
-  background: transparent;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.record-modal-content p {
-  margin: 0 0 10px;
-  line-height: 1.5;
-}
-
