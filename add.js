@@ -907,6 +907,9 @@ function renderStudentCalendar(student) {
     html += `<tr>`;
     html += `<th class="calendar-subject-cell">${subject}</th>`;
 
+     const subjectRecords = (student.homeworkRecords || []).filter(record => {
+      return record.subject === subject;
+
     if (!isJunior) {
       const firstCourse = subjectRecords[0] ?.course || "講座未設定";
       html += `<th class="calendar-course-cell">${firstCourse}</th>`;
@@ -916,9 +919,7 @@ function renderStudentCalendar(student) {
     html += `<td colspan="${daysInMonth}" class="calendar-day-cell">`;
     html += `<div class="calendar-track" style="width:${totalWidth}px;">`;
 
-    const subjectRecords = (student.homeworkRecords || []).filter(record => {
-  return record.subject === subject;
-});
+   });
 
 // 同じ期間のレコードをまとめる
 const grouped = {};
