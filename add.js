@@ -935,7 +935,7 @@ function renderStudentCalendar(student) {
       html += `
         <div class="calendar-bar"
              style="left:${left}px; width:${width}px; background:${color};"
-             onclick="alert('押せてる')">
+             onclick="showCalendarRecordDetail('${record.startDate}', '${record.endDate}', '${subject}')
         </div>
       `;
     });
