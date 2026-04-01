@@ -886,6 +886,7 @@ function renderStudentCalendar(student) {
 
   const subjects = ["国語", "数学", "英語", "理科", "社会"];
   const dayWidth = 36; // 1日ぶんの幅
+  const totalWidth = dayWidth * daysInMonth;
 
   let html = `<table class="calendar-table">`;
   html += `<thead><tr><th class="calendar-subject-cell">教科</th>`;
