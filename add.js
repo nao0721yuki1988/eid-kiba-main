@@ -928,7 +928,7 @@ function renderStudentCalendar(student) {
       const totalWidth = dayWidth * daysInMonth;
 
       const left = (startDay - 1) * dayWidth;
-      const width = (endDay - startDay + 1) * dayWidth;
+      const width = (endDay - startDay + 1) * dayWidth - 2;
 
       const color = subjectColors[record.subject] || "#999";
 
@@ -955,8 +955,8 @@ function showCalendarRecordDetail(startDate, endDate, subject) {
   const records = (student.homeworkRecords || []).filter(record => {
     return (
       record.subject === subject &&
-      record.startDate <= startDate &&
-      record.endDate >= endDate
+      record.startDate === startDate &&
+      record.endDate === endDate
     );
   });
 

@@ -240,6 +240,7 @@ th {
   height: 40px;
   text-align: center;
   vertical-align: middle;
+  box-sizing: border-box;
 }
 
 .calendar-subject-cell {
@@ -262,6 +263,7 @@ th {
 .calendar-track {
   position: relative;
   height: 40px;
+  z-index: 1;
 }
 
 .calendar-bar {
@@ -271,4 +273,5 @@ th {
   border-radius: 6px;
   cursor: pointer;
   opacity: 0.9;
+  z-index: 2;
 }
