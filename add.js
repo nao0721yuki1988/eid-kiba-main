@@ -910,13 +910,13 @@ function renderStudentCalendar(student) {
   html += `</tr></thead><tbody>`;
 
   subjects.forEach(subject => {
-    html += `<tr>`;
-    html += `<th class="calendar-subject-cell">${subject}</th>`;
-
-     const subjectRecords = (student.homeworkRecords || []).filter(record => {
+    const subjectRecords = (student.homeworkRecords || []).filter(record => {
       return record.subject === subject;
 
     if (subjectRecords.length === 0) return;
+
+    html += `<tr>`;
+    html += `<th class="calendar-subject-cell">${subject}</th>`;
 
     console.log("subject:", subject);
     console.log("subjectRecords[0]:", subjectRecords[0]);
