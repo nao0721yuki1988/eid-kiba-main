@@ -246,22 +246,27 @@ function renderStudentDetail() {
     `).join("");
   
   detail.innerHTML = `
+  <div id="studentPrintArea">
   <div class="top-info">
     <strong>名前：</strong>${escapeHtml(student.name)}<br>
     <strong>学年：</strong>${escapeHtml(student.grade)}
   </div>
-
+ 
   <h3>カレンダー</h3>
   <div id="calendarControls">
     <input type="month" id="calendarMonth" />
   </div>
   <div id="studentCalendar"></div>
+  </div>
 
   <div class="button-row" style="margin-top:16px;">
+    <button type="button" onclick="window.print()">印刷する</button>
     <button id="toggleTaskFormBtn" type="button">宿題を追加</button>
   </div>
 
   <div id="taskFormArea" class="hidden" style="margin-top:16px;">
+
+  
     <h3>宿題記録を追加</h3>
 
     <div class="date-row">

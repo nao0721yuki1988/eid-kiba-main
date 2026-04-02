@@ -348,3 +348,97 @@ th {
   font-size: 20px;
   cursor: pointer;
 }
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #studentPrintArea,
+  #studentPrintArea * {
+    visibility: visible;
+  }
+
+  #studentPrintArea {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    zoom: 0.8;
+  }
+
+  button,
+  .no-print,
+  .record-modal,
+  #recordModal,
+  #taskFormArea,
+  #toggleTaskFormBtn {
+    display: none !important;
+  }
+
+  #studentCalendar {
+    overflow: visible !important;
+  }
+
+  .calendar-table {
+    border-collapse: collapse;
+    width: 100% !important;
+    table-layout: fixed;
+  }
+
+  .calendar-subject-cell {
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    font-size: 11px !important;
+  }
+
+  .calendar-course-cell {
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+  }
+
+  .calendar-day-header {
+    width: 22px !important;
+    min-width: 22px !important;
+    max-width: 22px !important;
+    font-size: 8px !important;
+    text-align: center;
+  }
+
+  .calendar-day-cell {
+    padding: 0 !important;
+  }
+
+  .calendar-track {
+    position: relative;
+    min-height: 120px !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .calendar-bar {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    padding: 2px 4px !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .calendar-bar-unit {
+    margin-bottom: 1px !important;
+  }
+}
