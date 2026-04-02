@@ -899,7 +899,7 @@ function renderStudentCalendar(student) {
     : [...new Set((student.homeworkRecords || []).map(record => record.subject))];
 
   const isPrintMode = document.body.classList.contains("print-mode");
-  const daywidth = isPrintMode ? 24 : 36;
+  const dayWidth = isPrintMode ? 24 : 36;
 
   const totalWidth = dayWidth * daysInMonth;
 
