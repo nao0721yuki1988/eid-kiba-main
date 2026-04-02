@@ -898,9 +898,7 @@ function renderStudentCalendar(student) {
     ? ["国語", "数学", "英語", "理科", "社会"]
     : [...new Set((student.homeworkRecords || []).map(record => record.subject))];
 
-  const isPrintMode = document.body.classList.contains("print-mode");
-  const dayWidth = isPrintMode ? 24 : 36;
-
+  const dayWidth = 36;
   const totalWidth = dayWidth * daysInMonth;
 
   const subjectColors = {
@@ -1061,24 +1059,6 @@ window.updateUnitOptions = updateUnitOptions;
 window.updateSelectedCount = updateSelectedCount;
 window.showRecordDetail = showRecordDetail;
 window.showCalendarRecordDetail = showCalendarRecordDetail;
-window.addEventListener("beforeprint", () => {
-  document.body.classList.add("print-mode");
-
-  const student = students.find(s => s.id === selectedStudentId);
-  if (student) {
-    renderStudentCalendar(student);
-  }
-});
-
-window.addEventListener("afterprint", () => {
-  document.body.classList.remove("print-mode");
-
-  const student = students.find(s => s.id === selectedStudentId);
-  if (student) {
-    renderStudentCalendar(student);
-  }
-});
-
 
 console.log("add.js 読み込み成功");
 subscribeStudents();

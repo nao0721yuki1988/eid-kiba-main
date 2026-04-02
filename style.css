@@ -383,6 +383,7 @@ th {
     width: 100%;
     background: #fff;
     zoom: 0.8;
+    transform-origin: top left;
   }
 
   button,
@@ -400,29 +401,20 @@ th {
 
   .calendar-table {
     border-collapse: collapse;
-    width: 100% !important;
-    table-layout: fixed;
+    width: auto !important;
+    table-layout: auto !important;
   }
 
   .calendar-subject-cell {
-    width: 48px !important;
-    min-width: 48px !important;
-    max-width: 48px !important;
     font-size: 11px !important;
   }
 
   .calendar-course-cell {
-    width: 120px !important;
-    min-width: 120px !important;
-    max-width: 120px !important;
     font-size: 10px !important;
     line-height: 1.3 !important;
   }
 
   .calendar-day-header {
-    width: 24px !important;
-    min-width: 24px !important;
-    max-width: 24px !important;
     font-size: 8px !important;
     text-align: center;
   }
@@ -432,18 +424,9 @@ th {
   }
 
   .calendar-track {
-    position: relative;
     min-height: 120px !important;
-    width: 100% !important;
     overflow: visible !important;
-     background-image: repeating-linear-gradient(
-    to right,
-    transparent,
-    transparent 23px,
-    rgba(0, 0, 0, 0.08) 23px,
-    rgba(0, 0, 0, 0.08) 24px
-  );
-  }
+  }  
 
   .calendar-bar {
     font-size: 9px !important;
