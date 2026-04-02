@@ -402,7 +402,7 @@ function updateUnitOptions(changedBy = "subject") {
   checklist.innerHTML = "";
   selectedCount.textContent = "";
 
-  if (categorySelect) {
+  if (categorySelect && changedBy === "subject") {
     categorySelect.innerHTML = '<option value="">分野を選択</option>';
   }
 
