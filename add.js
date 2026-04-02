@@ -456,18 +456,13 @@ if (subject === "社会") {
   return;
 }
 
-// それ以外の中学教科（国語・数学・英語）
+// それ以外の中学教科（国語・数学・英語・理科）
 if (categorySelect) categorySelect.style.display = "none";
 
-console.log("中学その他 subject:", subject);
-console.log("中学その他 data:", gradeData[subject]);
-
 const generalData = gradeData[subject] || {};
-console.log("generalData raw:", generalData);
-console.log("generalData keys:", Object.keys(generalData));
-
 renderChapterUnits(generalData);
 return;
+
   }
 
   // ここに来るのは主に高校の数学以外
