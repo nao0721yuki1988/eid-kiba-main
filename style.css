@@ -269,9 +269,10 @@ th {
 }
 
 .calendar-day-header {
-  width: 40px;
-  min-width: 40px;
-  max-width: 40px;
+  width: 36px;
+  min-width: 36px;
+  max-width: 36px;
+  taxt-aline: center;
 }
 
 .calendar-day-cell {
@@ -282,6 +283,13 @@ th {
   position: relative;
   min-height: 160px;
   z-index: 1;
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent,
+    transparent 35px,
+    rgba(0, 0, 0, 0.08) 35px,
+    rgba(0, 0, 0, 0.08) 36px
+  );
 }
 
 .calendar-bar {
@@ -428,6 +436,14 @@ th {
     min-height: 120px !important;
     width: 100% !important;
     overflow: visible !important;
+     background-image: repeating-linear-gradient(
+    to right,
+    transparent,
+    transparent 21px,
+    rgba(0, 0, 0, 0.08) 21px,
+    rgba(0, 0, 0, 0.08) 22px
+  );
+}
   }
 
   .calendar-bar {
