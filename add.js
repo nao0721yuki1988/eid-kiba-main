@@ -524,6 +524,8 @@ async function addHomeworkRecord() {
   const section = document.getElementById("recordSection")?.value || "";
   const memo = document.getElementById("recordMemo")?.value.trim() || "";
 
+  console.log("courseの中身", course)
+
   const checkedUnits = Array.from(
     document.querySelectorAll(".unit-checkbox:checked")
   ).map(cb => cb.value);
@@ -542,6 +544,7 @@ async function addHomeworkRecord() {
     alert("単元を1つ以上選んでね。");
     return;
   }
+
 
   const newRecords = checkedUnits.map(unit => ({
     id: generateId(),
