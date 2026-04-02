@@ -923,6 +923,7 @@ function renderStudentCalendar(student) {
     console.log("course:", subjectRecords[0]?.course)
      
     if (!isJunior) {
+      const courseRecord = subejectsRecords.find(r => r.course);
       const firstCourse = subjectRecords[0]?.course || "講座未設定";
       html += `<th class="calendar-course-cell">${firstCourse}</th>`;
     }
