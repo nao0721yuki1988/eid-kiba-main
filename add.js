@@ -915,6 +915,10 @@ function renderStudentCalendar(student) {
 
     if (subjectRecords.length === 0) return;
 
+    console.log("subject:", subject);
+    console.log("subjectRecords[0]:", subjectRecords[0]);
+    console.log("course:", subjectRecords[0]?.course)
+     
     if (!isJunior) {
       const firstCourse = subjectRecords[0]?.course || "講座未設定";
       html += `<th class="calendar-course-cell">${firstCourse}</th>`;
