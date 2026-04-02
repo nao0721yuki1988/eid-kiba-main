@@ -923,7 +923,7 @@ function renderStudentCalendar(student) {
     console.log("course:", subjectRecords[0]?.course)
      
     if (!isJunior) {
-      html += `<th class="calendar-course-cell">テスト講座</th>`;
+      html += `<td class="calendar-course-cell"> style="color:#000; background:#fafafa;">テスト講座</td>`
     }
 
     // 1行ぶんの背景セル
