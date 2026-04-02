@@ -452,12 +452,16 @@ if (subject === "社会") {
   
 
   const socialData = gradeData["社会"] || {};
+  console.log("socialData:", socialData)
+  console.log("social keys:", social keys)
+
   const categoryData = socialData[category] || {};
+  console.log("categoryData:", categoryData)
+  
   renderChapterUnits(categoryData);
   return;
 
-  console.log("socialData:", socialData)
-  console.log("social keys:", social keys)
+ 
   console.log("categoryData:", categoryData)
 }
 
