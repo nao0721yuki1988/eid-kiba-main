@@ -472,4 +472,4 @@ const chu3SocialUnits = {
     ]
   }
 };
-unitchu3["社会"] = chu3SocialUnits;
+unitschu3["社会"] = chu3SocialUnits;
