@@ -437,18 +437,21 @@ if (subject === "社会") {
         <option value="歴史">歴史</option>
         <option value="公民">公民</option>
       `;
+      checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
+      return;
     }
   }
 
   const category = categorySelect ? categorySelect.value : "";
+
   if (!category) {
     checklist.innerHTML = '<div class="empty">分野を選んでね。</div>';
     return;
   }
 
   const socialData = gradeData["社会"] || {};
-  
   const categoryData = socialData[category] || {};
+
   renderChapterUnits(categoryData);
   return;
 }
