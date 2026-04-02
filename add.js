@@ -887,17 +887,27 @@ function renderStudentCalendar(student) {
   const [year, month] = monthValue.split("-").map(Number);
   const daysInMonth = new Date(year, month, 0).getDate();
 
-    
   const isJunior = student.grade.includes("中");
-  const subjects = isJunior
-   ? ["国語", "数学", "英語", "理科", "社会"]
-   : [...new Set((student.homeworkRecords || []).map(record => record.subject))];
 
-  const dayWidth = 36; // 1日ぶんの幅
+  const subjects = isJunior
+    ? ["国語", "数学", "英語", "理科", "社会"]
+    : [...new Set((student.homeworkRecords || []).map(record => record.subject))];
+
+  const dayWidth = 36;
   const totalWidth = dayWidth * daysInMonth;
 
+  const subjectColors = {
+    "国語": "#4CAF50",
+    "数学": "#2196F3",
+    "英語": "#E91E63",
+    "理科": "#9C27B0",
+    "社会": "#FF9800"
+  };
+
   let html = `<table class="calendar-table">`;
-  html += `<thead><tr><th class="calendar-subject-cell">教科</th>`;
+
+  html += `<thead><tr>`;
+  html += `<th class="calendar-subject-cell">教科</th>`;
 
   if (!isJunior) {
     html += `<th class="calendar-course-cell">講座</th>`;
@@ -912,75 +922,70 @@ function renderStudentCalendar(student) {
   subjects.forEach(subject => {
     const subjectRecords = (student.homeworkRecords || []).filter(record => {
       return record.subject === subject;
+    });
 
     if (subjectRecords.length === 0) return;
 
     html += `<tr>`;
     html += `<th class="calendar-subject-cell">${subject}</th>`;
 
-    console.log("subject:", subject);
-    console.log("subjectRecords[0]:", subjectRecords[0]);
-    console.log("course:", subjectRecords[0]?.course)
-     
     if (!isJunior) {
-      html += `<td class="calendar-course-cell"> style="color:#000; background:#fafafa;">テスト講座</td>`
+      const courseRecord = subjectRecords.find(r => r.course && r.course.trim() !== "");
+      const firstCourse = courseRecord?.course || "講座未設定";
+      html += `<td class="calendar-course-cell">${firstCourse}</td>`;
     }
 
-    // 1行ぶんの背景セル
     html += `<td colspan="${daysInMonth}" class="calendar-day-cell">`;
     html += `<div class="calendar-track" style="width:${totalWidth}px;">`;
 
-   });
+    const grouped = {};
 
-// 同じ期間のレコードをまとめる
-const grouped = {};
+    subjectRecords.forEach(record => {
+      const key = `${record.startDate}_${record.endDate}_${record.subject}`;
+      if (!grouped[key]) {
+        grouped[key] = [];
+      }
+      grouped[key].push(record);
+    });
 
-subjectRecords.forEach(record => {
-  const key = `${record.startDate}_${record.endDate}_${record.subject}`;
-  if (!grouped[key]) {
-    grouped[key] = [];
-  }
-  grouped[key].push(record);
-});
+    Object.values(grouped).forEach(groupRecords => {
+      const firstRecord = groupRecords[0];
 
-Object.values(grouped).forEach(groupRecords => {
-  const firstRecord = groupRecords[0];
+      const start = new Date(firstRecord.startDate);
+      const end = new Date(firstRecord.endDate);
 
-  const start = new Date(firstRecord.startDate);
-  const end = new Date(firstRecord.endDate);
+      const monthStart = new Date(year, month - 1, 1);
+      const monthEnd = new Date(year, month - 1, daysInMonth);
 
-  const monthStart = new Date(year, month - 1, 1);
-  const monthEnd = new Date(year, month - 1, daysInMonth);
+      const visibleStart = start < monthStart ? monthStart : start;
+      const visibleEnd = end > monthEnd ? monthEnd : end;
 
-  const visibleStart = start < monthStart ? monthStart : start;
-  const visibleEnd = end > monthEnd ? monthEnd : end;
+      if (visibleStart > visibleEnd) return;
 
-  if (visibleStart > visibleEnd) return;
+      const startDay = visibleStart.getDate();
+      const endDay = visibleEnd.getDate();
 
-  const startDay = visibleStart.getDate();
-  const endDay = visibleEnd.getDate();
+      const left = (startDay - 1) * dayWidth + 1;
+      const width = (endDay - startDay + 1) * dayWidth - 2;
 
-  const left = (startDay - 1) * dayWidth + 1;
-  const width = (endDay - startDay + 1) * dayWidth - 2;
+      const color = subjectColors[firstRecord.subject] || "#999";
 
-  const color = subjectColors[firstRecord.subject] || "#999";
+      const sortedRecords = [...groupRecords].sort((a, b) => {
+        return a.unit.localeCompare(b.unit, "ja");
+      });
 
-  const sortedRecords = [...groupRecords].sort((a, b) => {
-    return a.unit.localeCompare(b.unit, 'ja');
-  });
+      const unitsHtml = sortedRecords.map(record => {
+        return `<div class="calendar-bar-unit">${record.unit}</div>`;
+      }).join("");
 
-  const unitsHtml = sortedRecords.map(record => {
-    return `<div class="calendar-bar-unit">${record.unit}</div>`;
-  }).join("");
-
-  html += `
-    <div class="calendar-bar"
-         style="left:${left}px; width:${width}px; background:${color};"
-         onclick="showCalendarRecordDetail('${firstRecord.startDate}', '${firstRecord.endDate}', '${firstRecord.subject}')">
-      ${unitsHtml}
-    </div>
-  `;
-});
+      html += `
+        <div class="calendar-bar"
+             style="left:${left}px; width:${width}px; background:${color};"
+             onclick="showCalendarRecordDetail('${firstRecord.startDate}', '${firstRecord.endDate}', '${firstRecord.subject}')">
+          ${unitsHtml}
+        </div>
+      `;
+    });
 
     html += `</div></td>`;
     html += `</tr>`;
@@ -989,6 +994,7 @@ Object.values(grouped).forEach(groupRecords => {
   html += `</tbody></table>`;
   calendarEl.innerHTML = html;
 }
+
 
 function showCalendarRecordDetail(startDate, endDate, subject) {
   const student = students.find(s => s.id === selectedStudentId);

@@ -280,8 +280,7 @@ th {
 
 .calendar-track {
   position: relative;
-  min-height: 170px;
-  height: auto;
+  min-height: 160px;
   z-index: 1;
 }
 
