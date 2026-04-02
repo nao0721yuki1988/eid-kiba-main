@@ -481,4 +481,4 @@ const chu2SocialUnits = {
   }
 };
 
-unitschu2["社会"] = chu2SocialUnits;
+unitsChu2["社会"] = chu2SocialUnits;
