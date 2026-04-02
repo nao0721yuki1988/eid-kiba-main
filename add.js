@@ -446,23 +446,11 @@ if (subject === "社会") {
     return;
   }
 
-  console.log("subject:", subject)
-  console.log("category:", category)
-  console.log("gradeData:", gradeData)
-  
-
   const socialData = gradeData["社会"] || {};
-  console.log("socialData:", socialData)
-  console.log("social keys:", social keys)
-
-  const categoryData = socialData[category] || {};
-  console.log("categoryData:", categoryData)
   
+  const categoryData = socialData[category] || {};
   renderChapterUnits(categoryData);
   return;
-
- 
-  console.log("categoryData:", categoryData)
 }
 
 // それ以外の中学教科（国語・数学・英語）
