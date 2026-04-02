@@ -898,7 +898,7 @@ function renderStudentCalendar(student) {
     ? ["国語", "数学", "英語", "理科", "社会"]
     : [...new Set((student.homeworkRecords || []).map(record => record.subject))];
 
-  const isPrintMode = document.body.classlist.contains("print-mode");
+  const isPrintMode = document.body.classList.contains("print-mode");
   const daywidth = isPrintMode ? 24 : 36;
 
   const totalWidth = dayWidth * daysInMonth;
