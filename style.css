@@ -420,9 +420,9 @@ th {
   }
 
   .calendar-day-header {
-    width: 22px !important;
-    min-width: 22px !important;
-    max-width: 22px !important;
+    width: 24px !important;
+    min-width: 24px !important;
+    max-width: 24px !important;
     font-size: 8px !important;
     text-align: center;
   }
@@ -439,9 +439,9 @@ th {
      background-image: repeating-linear-gradient(
     to right,
     transparent,
-    transparent 21px,
-    rgba(0, 0, 0, 0.08) 21px,
-    rgba(0, 0, 0, 0.08) 22px
+    transparent 23px,
+    rgba(0, 0, 0, 0.08) 23px,
+    rgba(0, 0, 0, 0.08) 24px
   );
 }
   }
