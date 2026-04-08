@@ -23,6 +23,10 @@ const hsSubjects = {
 };
 
 window.hsMathCourses = hsMathCourses;
+window.hsEnglishCourses = hsEnglishCourses;
+window.hsJapaneseCourses = hsJapaneseCourses;
+window.hsScienceCourses = hsScienceCourses;
+window.hsSocialCourses = hsSocialCourses;
 
 const users = [
   { id: "n_miwa", password: "0001", role: "manager", name: "三輪" },
