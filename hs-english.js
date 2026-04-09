@@ -295,7 +295,7 @@ const hsEnglishCourses = {
       "21-8 Lesson8 再帰代名詞"
     ]
   }
-}
+},
 
 "成り立ち理解！PART1 必須イディオム&英文法": {
   "LESSON1": {

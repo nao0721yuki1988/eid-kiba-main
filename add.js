@@ -22,7 +22,7 @@ const hsSubjects = {
   英語: typeof hsEnglishCourses !== "undefined" ? hsEnglishCourses : {},
   国語: typeof hsJapaneseCourses !== "undefined" ? hsJapaneseCourses : {},
   理科: typeof hsScienceCourses !== "undefined" ? hsScienceCourses : {},
-  数学: typeof hsSocialCourses !== "undefined" ? hsSocialCourses : {}
+  社会: typeof hsSocialCourses !== "undefined" ? hsSocialCourses : {}
 };
 
 window.hsMathCourses = hsMathCourses;
